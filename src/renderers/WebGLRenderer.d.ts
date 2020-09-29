@@ -24,7 +24,7 @@ import { Texture } from '../textures/Texture';
 export interface Renderer {
 	domElement: HTMLCanvasElement;
 
-	render( scene: Scene, camera: Camera ): void;
+	render( scene: Object3D, camera: Camera ): void;
 	setSize( width: number, height: number, updateStyle?: boolean ): void;
 }
 
@@ -100,7 +100,7 @@ export interface WebGLDebug {
  * The WebGL renderer displays your beautifully crafted scenes using WebGL, if your device supports it.
  * This renderer has way better performance than CanvasRenderer.
  *
- * @see <a href="https://github.com/mrdoob/three.js/blob/master/src/renderers/WebGLRenderer.js">src/renderers/WebGLRenderer.js</a>
+ * @see {@link https://github.com/mrdoob/three.js/blob/master/src/renderers/WebGLRenderer.js|src/renderers/WebGLRenderer.js}
  */
 export class WebGLRenderer implements Renderer {
 
@@ -112,6 +112,7 @@ export class WebGLRenderer implements Renderer {
 	/**
 	 * A Canvas where the renderer draws its output.
 	 * This is automatically created by the renderer in the constructor (if not provided already); you just need to add it to your page.
+	 * @default document.createElementNS( 'http://www.w3.org/1999/xhtml', 'canvas' )
 	 */
 	domElement: HTMLCanvasElement;
 
@@ -122,61 +123,85 @@ export class WebGLRenderer implements Renderer {
 
 	/**
 	 * Defines whether the renderer should automatically clear its output before rendering.
+	 * @default true
 	 */
 	autoClear: boolean;
 
 	/**
 	 * If autoClear is true, defines whether the renderer should clear the color buffer. Default is true.
+	 * @default true
 	 */
 	autoClearColor: boolean;
 
 	/**
 	 * If autoClear is true, defines whether the renderer should clear the depth buffer. Default is true.
+	 * @default true
 	 */
 	autoClearDepth: boolean;
 
 	/**
 	 * If autoClear is true, defines whether the renderer should clear the stencil buffer. Default is true.
+	 * @default true
 	 */
 	autoClearStencil: boolean;
 
 	/**
 	 * Debug configurations.
+	 * @default { checkShaderErrors: true }
 	 */
 	debug: WebGLDebug;
 
 	/**
 	 * Defines whether the renderer should sort objects. Default is true.
+	 * @default true
 	 */
 	sortObjects: boolean;
 
+	/**
+	 * @default []
+	 */
 	clippingPlanes: any[];
+
+	/**
+	 * @default false
+	 */
 	localClippingEnabled: boolean;
 
 	extensions: WebGLExtensions;
 
 	/**
 	 * Default is LinearEncoding.
+	 * @default THREE.LinearEncoding
 	 */
 	outputEncoding: TextureEncoding;
 
+	/**
+	 * @default false
+	 */
 	physicallyCorrectLights: boolean;
-	toneMapping: ToneMapping;
-	toneMappingExposure: number;
-	toneMappingWhitePoint: number;
 
 	/**
-	 * Default is false.
+	 * @default THREE.NoToneMapping
+	 */
+	toneMapping: ToneMapping;
+
+	/**
+	 * @default 1
+	 */
+	toneMappingExposure: number;
+
+	/**
+	 * @default false
 	 */
 	shadowMapDebug: boolean;
 
 	/**
-	 * Default is 8.
+	 * @default 8
 	 */
 	maxMorphTargets: number;
 
 	/**
-	 * Default is 4.
+	 * @default 4
 	 */
 	maxMorphNormals: number;
 
@@ -274,9 +299,7 @@ export class WebGLRenderer implements Renderer {
 	/**
 	 * Sets the clear color, using color for the color and alpha for the opacity.
 	 */
-	setClearColor( color: Color, alpha?: number ): void;
-	setClearColor( color: string, alpha?: number ): void;
-	setClearColor( color: number, alpha?: number ): void;
+	setClearColor( color: Color | string | number, alpha?: number ): void;
 
 	/**
 	 * Returns a float with the current clear alpha. Ranges from 0 to 1.
@@ -336,12 +359,12 @@ export class WebGLRenderer implements Renderer {
 	 * Compiles all materials in the scene with the camera. This is useful to precompile shaders before the first rendering.
 	 */
 	compile(
-		scene: Scene,
+		scene: Object3D,
 		camera: Camera
 	): void;
 
 	/**
-	 * Render a scene using a camera.
+	 * Render a scene or an object using a camera.
 	 * The render is done to a previously specified {@link WebGLRenderTarget#renderTarget .renderTarget} set by calling
 	 * {@link WebGLRenderer#setRenderTarget .setRenderTarget} or to the canvas as usual.
 	 *
@@ -352,7 +375,7 @@ export class WebGLRenderer implements Renderer {
 	 * properties to false. To forcibly clear one ore more buffers call {@link WebGLRenderer#clear .clear}.
 	 */
 	render(
-		scene: Scene,
+		scene: Object3D,
 		camera: Camera
 	): void;
 

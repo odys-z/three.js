@@ -1,5 +1,4 @@
 /**
- * @author Kai Salmen / https://kaisalmen.de
  * Development repository: https://github.com/kaisalmen/WWOBJLoader
  */
 
@@ -344,9 +343,13 @@ OBJLoader2Parser.prototype = {
 		this.globalCounts.totalBytes = length;
 		let buffer = new Array( 128 );
 
-		for ( let code, word = '', bufferPointer = 0, slashesCount = 0, i = 0; i < length; i ++ ) {
+		let bufferPointer = 0;
+		let slashesCount = 0;
+		let word = '';
+		let currentByte = 0;
+		for ( let code, currentByte = 0; currentByte < length; currentByte ++ ) {
 
-			code = arrayBufferView[ i ];
+			code = arrayBufferView[ currentByte ];
 			switch ( code ) {
 
 				// space
@@ -363,11 +366,8 @@ OBJLoader2Parser.prototype = {
 
 				// LF
 				case 10:
-					if ( word.length > 0 ) buffer[ bufferPointer ++ ] = word;
+					this._processLine( buffer, bufferPointer, slashesCount, word, currentByte );
 					word = '';
-					this.globalCounts.lineByte = this.globalCounts.currentByte;
-					this.globalCounts.currentByte = i;
-					this._processLine( buffer, bufferPointer, slashesCount );
 					bufferPointer = 0;
 					slashesCount = 0;
 					break;
@@ -384,6 +384,7 @@ OBJLoader2Parser.prototype = {
 
 		}
 
+		this._processLine( buffer, bufferPointer, slashesCount, word, currentByte );
 		this._finalizeParsing();
 		if ( this.logging.enabled ) console.timeEnd( 'OBJLoader2Parser.execute' );
 
@@ -404,9 +405,13 @@ OBJLoader2Parser.prototype = {
 		this.globalCounts.totalBytes = length;
 		let buffer = new Array( 128 );
 
-		for ( let char, word = '', bufferPointer = 0, slashesCount = 0, i = 0; i < length; i ++ ) {
+		let bufferPointer = 0;
+		let slashesCount = 0;
+		let word = '';
+		let currentByte = 0;
+		for ( let char; currentByte < length; currentByte ++ ) {
 
-			char = text[ i ];
+			char = text[ currentByte ];
 			switch ( char ) {
 
 				case ' ':
@@ -421,11 +426,8 @@ OBJLoader2Parser.prototype = {
 					break;
 
 				case '\n':
-					if ( word.length > 0 ) buffer[ bufferPointer ++ ] = word;
+					this._processLine( buffer, bufferPointer, slashesCount, word, currentByte );
 					word = '';
-					this.globalCounts.lineByte = this.globalCounts.currentByte;
-					this.globalCounts.currentByte = i;
-					this._processLine( buffer, bufferPointer, slashesCount );
 					bufferPointer = 0;
 					slashesCount = 0;
 					break;
@@ -440,14 +442,19 @@ OBJLoader2Parser.prototype = {
 
 		}
 
+		this._processLine( buffer, bufferPointer, word, slashesCount );
 		this._finalizeParsing();
 		if ( this.logging.enabled ) console.timeEnd( 'OBJLoader2Parser.executeLegacy' );
 
 	},
 
-	_processLine: function ( buffer, bufferPointer, slashesCount ) {
+	_processLine: function ( buffer, bufferPointer, slashesCount, word, currentByte ) {
 
+		this.globalCounts.lineByte = this.globalCounts.currentByte;
+		this.globalCounts.currentByte = currentByte;
 		if ( bufferPointer < 1 ) return;
+
+		if ( word.length > 0 ) buffer[ bufferPointer ++ ] = word;
 
 		let reconstructString = function ( content, legacyMode, start, stop ) {
 
