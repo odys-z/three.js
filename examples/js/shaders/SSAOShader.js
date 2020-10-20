@@ -1,6 +1,5 @@
+console.warn( "THREE.SSAOShader: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
 /**
- * @author Mugen87 / https://github.com/Mugen87
- *
  * References:
  * http://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html
  * https://learnopengl.com/Advanced-Lighting/SSAO
@@ -86,7 +85,7 @@ THREE.SSAOShader = {
 
 		"	#else",
 
-		"		return texture2D( depthSampler, coord ).x;",
+		"		return texture2D( tDepth, screenPosition ).x;",
 
 		"	#endif",
 
@@ -223,7 +222,7 @@ THREE.SSAODepthShader = {
 
 		"	#else",
 
-		"		return texture2D( depthSampler, coord ).x;",
+		"		return texture2D( tDepth, screenPosition ).x;",
 
 		"	#endif",
 

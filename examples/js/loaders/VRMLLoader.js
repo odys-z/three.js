@@ -1,14 +1,10 @@
-/**
- * @author Mugen87 / https://github.com/Mugen87
- */
-
-/* global chevrotain */
+console.warn( "THREE.VRMLLoader: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
 
 THREE.VRMLLoader = ( function () {
 
 	// dependency check
 
-	if ( typeof chevrotain === 'undefined' ) {
+	if ( typeof chevrotain === 'undefined' ) { // eslint-disable-line no-undef
 
 		throw Error( 'THREE.VRMLLoader: External library chevrotain.min.js required.' );
 
@@ -32,11 +28,31 @@ THREE.VRMLLoader = ( function () {
 
 			var path = ( scope.path === '' ) ? THREE.LoaderUtils.extractUrlBase( url ) : scope.path;
 
-			var loader = new THREE.FileLoader( this.manager );
+			var loader = new THREE.FileLoader( scope.manager );
 			loader.setPath( scope.path );
+			loader.setRequestHeader( scope.requestHeader );
+			loader.setWithCredentials( scope.withCredentials );
 			loader.load( url, function ( text ) {
 
-				onLoad( scope.parse( text, path ) );
+				try {
+
+					onLoad( scope.parse( text, path ) );
+
+				} catch ( e ) {
+
+					if ( onError ) {
+
+						onError( e );
+
+					} else {
+
+						console.error( e );
+
+					}
+
+					scope.manager.itemError( url );
+
+				}
 
 			}, onProgress, onError );
 
@@ -83,7 +99,7 @@ THREE.VRMLLoader = ( function () {
 
 			function createTokens() {
 
-				var createToken = chevrotain.createToken;
+				var createToken = chevrotain.createToken; // eslint-disable-line no-undef
 
 				// from http://gun.teipir.gr/VRML-amgem/spec/part1/concepts.html#SyntaxBasics
 
@@ -158,7 +174,7 @@ THREE.VRMLLoader = ( function () {
 				var Comment = createToken( {
 					name: 'Comment',
 					pattern: /#.*/,
-					group: chevrotain.Lexer.SKIPPED
+					group: chevrotain.Lexer.SKIPPED // eslint-disable-line no-undef
 				} );
 
 				// commas, blanks, tabs, newlines and carriage returns are whitespace characters wherever they appear outside of string fields
@@ -166,7 +182,7 @@ THREE.VRMLLoader = ( function () {
 				var WhiteSpace = createToken( {
 					name: 'WhiteSpace',
 					pattern: /[ ,\s]/,
-					group: chevrotain.Lexer.SKIPPED
+					group: chevrotain.Lexer.SKIPPED // eslint-disable-line no-undef
 				} );
 
 				var tokens = [
@@ -584,6 +600,7 @@ THREE.VRMLLoader = ( function () {
 
 					case 'Group':
 					case 'Transform':
+					case 'Collision':
 						build = buildGroupingNode( node );
 						break;
 
@@ -664,7 +681,6 @@ THREE.VRMLLoader = ( function () {
 
 					case 'Anchor':
 					case 'Billboard':
-					case 'Collision':
 
 					case 'Inline':
 					case 'LOD':
@@ -729,12 +745,24 @@ THREE.VRMLLoader = ( function () {
 
 					switch ( fieldName ) {
 
+						case 'bboxCenter':
+							// field not supported
+							break;
+
+						case 'bboxSize':
+							// field not supported
+							break;
+
 						case 'center':
 							// field not supported
 							break;
 
 						case 'children':
 							parseFieldChildren( fieldValues, object );
+							break;
+
+						case 'collide':
+							// field not supported
 							break;
 
 						case 'rotation':
@@ -755,11 +783,7 @@ THREE.VRMLLoader = ( function () {
 							object.position.set( fieldValues[ 0 ], fieldValues[ 1 ], fieldValues[ 2 ] );
 							break;
 
-						case 'bboxCenter':
-							// field not supported
-							break;
-
-						case 'bboxSize':
+						case 'proxy':
 							// field not supported
 							break;
 
@@ -3129,17 +3153,17 @@ THREE.VRMLLoader = ( function () {
 			var textureLoader = new THREE.TextureLoader( this.manager );
 			textureLoader.setPath( this.resourcePath || path ).setCrossOrigin( this.crossOrigin );
 
-			// create JSON representing the tree structure of the VRML asset
-
-			var tree = generateVRMLTree( data );
-
 			// check version (only 2.0 is supported)
 
-			if ( tree.version.indexOf( 'V2.0' ) === - 1 ) {
+			if ( data.indexOf( '#VRML V2.0' ) === - 1 ) {
 
 				throw Error( 'THREE.VRMLLexer: Version of VRML asset not supported.' );
 
 			}
+
+			// create JSON representing the tree structure of the VRML asset
+
+			var tree = generateVRMLTree( data );
 
 			// parse the tree structure to a three.js scene
 
@@ -3153,7 +3177,7 @@ THREE.VRMLLoader = ( function () {
 
 	function VRMLLexer( tokens ) {
 
-		this.lexer = new chevrotain.Lexer( tokens );
+		this.lexer = new chevrotain.Lexer( tokens ); // eslint-disable-line no-undef
 
 	}
 
@@ -3181,7 +3205,7 @@ THREE.VRMLLoader = ( function () {
 
 	function VRMLParser( tokenVocabulary ) {
 
-		chevrotain.Parser.call( this, tokenVocabulary );
+		chevrotain.Parser.call( this, tokenVocabulary ); // eslint-disable-line no-undef
 
 		var $ = this;
 
@@ -3408,7 +3432,7 @@ THREE.VRMLLoader = ( function () {
 
 	}
 
-	VRMLParser.prototype = Object.create( chevrotain.Parser.prototype );
+	VRMLParser.prototype = Object.create( chevrotain.Parser.prototype ); // eslint-disable-line no-undef
 	VRMLParser.prototype.constructor = VRMLParser;
 
 	function Face( a, b, c ) {

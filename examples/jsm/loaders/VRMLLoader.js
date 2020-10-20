@@ -1,7 +1,3 @@
-/**
- * @author Mugen87 / https://github.com/Mugen87
- */
-
 import {
 	BackSide,
 	BoxBufferGeometry,
@@ -40,13 +36,11 @@ import {
 } from "../../../build/three.module.js";
 import { chevrotain } from "../libs/chevrotain.module.min.js";
 
-/* global chevrotain */
-
 var VRMLLoader = ( function () {
 
 	// dependency check
 
-	if ( typeof chevrotain === 'undefined' ) {
+	if ( typeof chevrotain === 'undefined' ) { // eslint-disable-line no-undef
 
 		throw Error( 'THREE.VRMLLoader: External library chevrotain.min.js required.' );
 
@@ -70,11 +64,31 @@ var VRMLLoader = ( function () {
 
 			var path = ( scope.path === '' ) ? LoaderUtils.extractUrlBase( url ) : scope.path;
 
-			var loader = new FileLoader( this.manager );
+			var loader = new FileLoader( scope.manager );
 			loader.setPath( scope.path );
+			loader.setRequestHeader( scope.requestHeader );
+			loader.setWithCredentials( scope.withCredentials );
 			loader.load( url, function ( text ) {
 
-				onLoad( scope.parse( text, path ) );
+				try {
+
+					onLoad( scope.parse( text, path ) );
+
+				} catch ( e ) {
+
+					if ( onError ) {
+
+						onError( e );
+
+					} else {
+
+						console.error( e );
+
+					}
+
+					scope.manager.itemError( url );
+
+				}
 
 			}, onProgress, onError );
 
@@ -121,7 +135,7 @@ var VRMLLoader = ( function () {
 
 			function createTokens() {
 
-				var createToken = chevrotain.createToken;
+				var createToken = chevrotain.createToken; // eslint-disable-line no-undef
 
 				// from http://gun.teipir.gr/VRML-amgem/spec/part1/concepts.html#SyntaxBasics
 
@@ -196,7 +210,7 @@ var VRMLLoader = ( function () {
 				var Comment = createToken( {
 					name: 'Comment',
 					pattern: /#.*/,
-					group: chevrotain.Lexer.SKIPPED
+					group: chevrotain.Lexer.SKIPPED // eslint-disable-line no-undef
 				} );
 
 				// commas, blanks, tabs, newlines and carriage returns are whitespace characters wherever they appear outside of string fields
@@ -204,7 +218,7 @@ var VRMLLoader = ( function () {
 				var WhiteSpace = createToken( {
 					name: 'WhiteSpace',
 					pattern: /[ ,\s]/,
-					group: chevrotain.Lexer.SKIPPED
+					group: chevrotain.Lexer.SKIPPED // eslint-disable-line no-undef
 				} );
 
 				var tokens = [
@@ -622,6 +636,7 @@ var VRMLLoader = ( function () {
 
 					case 'Group':
 					case 'Transform':
+					case 'Collision':
 						build = buildGroupingNode( node );
 						break;
 
@@ -702,7 +717,6 @@ var VRMLLoader = ( function () {
 
 					case 'Anchor':
 					case 'Billboard':
-					case 'Collision':
 
 					case 'Inline':
 					case 'LOD':
@@ -767,12 +781,24 @@ var VRMLLoader = ( function () {
 
 					switch ( fieldName ) {
 
+						case 'bboxCenter':
+							// field not supported
+							break;
+
+						case 'bboxSize':
+							// field not supported
+							break;
+
 						case 'center':
 							// field not supported
 							break;
 
 						case 'children':
 							parseFieldChildren( fieldValues, object );
+							break;
+
+						case 'collide':
+							// field not supported
 							break;
 
 						case 'rotation':
@@ -793,11 +819,7 @@ var VRMLLoader = ( function () {
 							object.position.set( fieldValues[ 0 ], fieldValues[ 1 ], fieldValues[ 2 ] );
 							break;
 
-						case 'bboxCenter':
-							// field not supported
-							break;
-
-						case 'bboxSize':
+						case 'proxy':
 							// field not supported
 							break;
 
@@ -3167,17 +3189,17 @@ var VRMLLoader = ( function () {
 			var textureLoader = new TextureLoader( this.manager );
 			textureLoader.setPath( this.resourcePath || path ).setCrossOrigin( this.crossOrigin );
 
-			// create JSON representing the tree structure of the VRML asset
-
-			var tree = generateVRMLTree( data );
-
 			// check version (only 2.0 is supported)
 
-			if ( tree.version.indexOf( 'V2.0' ) === - 1 ) {
+			if ( data.indexOf( '#VRML V2.0' ) === - 1 ) {
 
 				throw Error( 'THREE.VRMLLexer: Version of VRML asset not supported.' );
 
 			}
+
+			// create JSON representing the tree structure of the VRML asset
+
+			var tree = generateVRMLTree( data );
 
 			// parse the tree structure to a three.js scene
 
@@ -3191,7 +3213,7 @@ var VRMLLoader = ( function () {
 
 	function VRMLLexer( tokens ) {
 
-		this.lexer = new chevrotain.Lexer( tokens );
+		this.lexer = new chevrotain.Lexer( tokens ); // eslint-disable-line no-undef
 
 	}
 
@@ -3219,7 +3241,7 @@ var VRMLLoader = ( function () {
 
 	function VRMLParser( tokenVocabulary ) {
 
-		chevrotain.Parser.call( this, tokenVocabulary );
+		chevrotain.Parser.call( this, tokenVocabulary ); // eslint-disable-line no-undef
 
 		var $ = this;
 
@@ -3446,7 +3468,7 @@ var VRMLLoader = ( function () {
 
 	}
 
-	VRMLParser.prototype = Object.create( chevrotain.Parser.prototype );
+	VRMLParser.prototype = Object.create( chevrotain.Parser.prototype ); // eslint-disable-line no-undef
 	VRMLParser.prototype.constructor = VRMLParser;
 
 	function Face( a, b, c ) {

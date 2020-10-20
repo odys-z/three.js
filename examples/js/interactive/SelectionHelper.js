@@ -1,6 +1,4 @@
-/**
- * @author HypnosNova / https://www.threejs.org.cn/gallery
- */
+console.warn( "THREE.SelectionHelper: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
 
 THREE.SelectionHelper = ( function () {
 
@@ -18,14 +16,14 @@ THREE.SelectionHelper = ( function () {
 
 		this.isDown = false;
 
-		this.renderer.domElement.addEventListener( 'mousedown', function ( event ) {
+		this.renderer.domElement.addEventListener( 'pointerdown', function ( event ) {
 
 			this.isDown = true;
 			this.onSelectStart( event );
 
 		}.bind( this ), false );
 
-		this.renderer.domElement.addEventListener( 'mousemove', function ( event ) {
+		this.renderer.domElement.addEventListener( 'pointermove', function ( event ) {
 
 			if ( this.isDown ) {
 
@@ -35,7 +33,7 @@ THREE.SelectionHelper = ( function () {
 
 		}.bind( this ), false );
 
-		this.renderer.domElement.addEventListener( 'mouseup', function ( event ) {
+		this.renderer.domElement.addEventListener( 'pointerup', function ( event ) {
 
 			this.isDown = false;
 			this.onSelectOver( event );

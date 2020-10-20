@@ -1,7 +1,3 @@
-/**
- * @author mrdoob / http://mrdoob.com/
- */
-
 import {
 	BufferGeometry,
 	FileLoader,
@@ -79,7 +75,6 @@ var OBJLoader = ( function () {
 						normals: [],
 						colors: [],
 						uvs: [],
-						hasNormalIndices: false,
 						hasUVIndices: false
 					},
 					materials: [],
@@ -358,8 +353,6 @@ var OBJLoader = ( function () {
 
 					this.addNormal( ia, ib, ic );
 
-					this.object.geometry.hasNormalIndices = true;
-
 				} else {
 
 					this.addFaceNormal( ia, ib, ic );
@@ -451,11 +444,31 @@ var OBJLoader = ( function () {
 
 			var scope = this;
 
-			var loader = new FileLoader( scope.manager );
+			var loader = new FileLoader( this.manager );
 			loader.setPath( this.path );
+			loader.setRequestHeader( this.requestHeader );
+			loader.setWithCredentials( this.withCredentials );
 			loader.load( url, function ( text ) {
 
-				onLoad( scope.parse( text ) );
+				try {
+
+					onLoad( scope.parse( text ) );
+
+				} catch ( e ) {
+
+					if ( onError ) {
+
+						onError( e );
+
+					} else {
+
+						console.error( e );
+
+					}
+
+					scope.manager.itemError( url );
+
+				}
 
 			}, onProgress, onError );
 
@@ -727,11 +740,7 @@ var OBJLoader = ( function () {
 
 				buffergeometry.setAttribute( 'position', new Float32BufferAttribute( geometry.vertices, 3 ) );
 
-				if ( geometry.hasNormalIndices === true ) {
-
-					buffergeometry.setAttribute( 'normal', new Float32BufferAttribute( geometry.normals, 3 ) );
-
-				}
+				buffergeometry.setAttribute( 'normal', new Float32BufferAttribute( geometry.normals, 3 ) );
 
 				if ( geometry.colors.length > 0 ) {
 
