@@ -143,6 +143,10 @@ function WebGLRenderer( parameters ) {
 	const _scissor = new Vector4( 0, 0, _width, _height );
 	let _scissorTest = false;
 
+	//
+
+	const _currentDrawBuffers = [];
+
 	// frustum
 
 	const _frustum = new Frustum();
@@ -283,6 +287,8 @@ function WebGLRenderer( parameters ) {
 		state = new WebGLState( _gl, extensions, capabilities );
 		state.scissor( _currentScissor.copy( _scissor ).multiplyScalar( _pixelRatio ).floor() );
 		state.viewport( _currentViewport.copy( _viewport ).multiplyScalar( _pixelRatio ).floor() );
+
+		_currentDrawBuffers[ 0 ] = _gl.BACK;
 
 		info = new WebGLInfo( _gl );
 		properties = new WebGLProperties();
@@ -1817,6 +1823,63 @@ function WebGLRenderer( parameters ) {
 
 			_gl.bindFramebuffer( _gl.FRAMEBUFFER, framebuffer );
 			_currentFramebuffer = framebuffer;
+
+			if ( capabilities.multiRenderTarget ) {
+
+				let needsUpdate = false;
+
+				if ( renderTarget && renderTarget.isWebGLMultiRenderTarget ) {
+
+					if ( _currentDrawBuffers.length !== renderTarget.textures.length || _currentDrawBuffers[ 0 ] !== _gl.COLOR_ATTACHMENT0 ) {
+
+						for ( let i = 0, il = renderTarget.textures.length; i < il; i ++ ) {
+
+							_currentDrawBuffers[ i ] = _gl.COLOR_ATTACHMENT0 + i;
+
+						}
+
+						_currentDrawBuffers.length = renderTarget.textures.length;
+						needsUpdate = true;
+
+					}
+
+				} else if ( renderTarget ) {
+
+					if ( _currentDrawBuffers.length !== 1 || _currentDrawBuffers[ 0 ] !== _gl.COLOR_ATTACHMENT0 ) {
+
+						_currentDrawBuffers[ 0 ] = _gl.COLOR_ATTACHMENT0;
+						_currentDrawBuffers.length = 1;
+						needsUpdate = true;
+
+					}
+
+				} else {
+
+					if ( _currentDrawBuffers.length !== 1 || _currentDrawBuffers[ 0 ] !== _gl.BACK ) {
+
+						_currentDrawBuffers[ 0 ] = _gl.BACK;
+						_currentDrawBuffers.length = 1;
+						needsUpdate = true;
+
+					}
+
+				}
+
+				if ( needsUpdate ) {
+
+					if ( capabilities.isWebGL2 ) {
+
+						_gl.drawBuffers( _currentDrawBuffers );
+
+					} else {
+
+						extensions.get( 'WEBGL_draw_buffers' ).drawBuffersWEBGL( _currentDrawBuffers );
+
+					}
+
+				}
+
+			}
 
 		}
 

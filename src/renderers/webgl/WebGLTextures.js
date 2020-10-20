@@ -274,9 +274,32 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 
 			_gl.deleteFramebuffer( renderTargetProperties.__webglFramebuffer );
 			if ( renderTargetProperties.__webglDepthbuffer ) _gl.deleteRenderbuffer( renderTargetProperties.__webglDepthbuffer );
+
 			if ( renderTargetProperties.__webglMultisampledFramebuffer ) _gl.deleteFramebuffer( renderTargetProperties.__webglMultisampledFramebuffer );
 			if ( renderTargetProperties.__webglColorRenderbuffer ) _gl.deleteRenderbuffer( renderTargetProperties.__webglColorRenderbuffer );
 			if ( renderTargetProperties.__webglDepthRenderbuffer ) _gl.deleteRenderbuffer( renderTargetProperties.__webglDepthRenderbuffer );
+
+		}
+
+		if ( renderTarget.isWebGLMultiRenderTarget ) {
+
+			const textures = renderTarget.textures;
+
+			for ( let i = 0, il = textures.length; i < il; i ++ ) {
+
+				const attachmentProperties = properties.get( textures[ i ] );
+
+				if ( attachmentProperties.__webglTexture ) {
+
+					_gl.deleteTexture( attachmentProperties.__webglTexture );
+
+					info.memory.textures --;
+
+				}
+
+				properties.remove( textures[ i ] );
+
+			}
 
 		}
 
@@ -828,14 +851,14 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 	// Render targets
 
 	// Setup storage for target texture and bind it to correct framebuffer
-	function setupFrameBufferTexture( framebuffer, renderTarget, attachment, textureTarget ) {
+	function setupFrameBufferTexture( framebuffer, renderTarget, texture, attachment, textureTarget ) {
 
-		const glFormat = utils.convert( renderTarget.texture.format );
-		const glType = utils.convert( renderTarget.texture.type );
-		const glInternalFormat = getInternalFormat( renderTarget.texture.internalFormat, glFormat, glType );
+		const glFormat = utils.convert( texture.format );
+		const glType = utils.convert( texture.type );
+		const glInternalFormat = getInternalFormat( texture.internalFormat, glFormat, glType );
 		state.texImage2D( textureTarget, 0, glInternalFormat, renderTarget.width, renderTarget.height, 0, glFormat, glType, null );
 		_gl.bindFramebuffer( _gl.FRAMEBUFFER, framebuffer );
-		_gl.framebufferTexture2D( _gl.FRAMEBUFFER, attachment, textureTarget, properties.get( renderTarget.texture ).__webglTexture, 0 );
+		_gl.framebufferTexture2D( _gl.FRAMEBUFFER, attachment, textureTarget, properties.get( texture ).__webglTexture, 0 );
 		_gl.bindFramebuffer( _gl.FRAMEBUFFER, null );
 
 	}
@@ -1019,6 +1042,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 		info.memory.textures ++;
 
 		const isCube = ( renderTarget.isWebGLCubeRenderTarget === true );
+		const isMultiRenderTarget = ( renderTarget.isWebGLMultiRenderTarget === true );
 		const isMultisample = ( renderTarget.isWebGLMultisampleRenderTarget === true );
 		const supportsMips = isPowerOfTwo( renderTarget ) || isWebGL2;
 
@@ -1048,7 +1072,31 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 
 			renderTargetProperties.__webglFramebuffer = _gl.createFramebuffer();
 
-			if ( isMultisample ) {
+			if ( isMultiRenderTarget ) {
+
+				if ( capabilities.multiRenderTarget ) {
+
+					for ( let i = 0, il = renderTarget.textures.length; i < il; i ++ ) {
+
+						const attachmentProperties = properties.get( renderTarget.textures[ i ] );
+
+						if ( attachmentProperties.__webglTexture === undefined ) {
+
+							attachmentProperties.__webglTexture = _gl.createTexture();
+
+							info.memory.textures ++;
+
+						}
+
+					}
+
+				} else {
+
+					console.warn( 'THREE.WebGLRenderer: WebGLMultiRenderTarget can only be used with WebGL2 or WEBGL_draw_buffers extension.' );
+
+				}
+
+			} else if ( isMultisample ) {
 
 				if ( isWebGL2 ) {
 
@@ -1096,7 +1144,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 
 			for ( let i = 0; i < 6; i ++ ) {
 
-				setupFrameBufferTexture( renderTargetProperties.__webglFramebuffer[ i ], renderTarget, _gl.COLOR_ATTACHMENT0, _gl.TEXTURE_CUBE_MAP_POSITIVE_X + i );
+				setupFrameBufferTexture( renderTargetProperties.__webglFramebuffer[ i ], renderTarget, renderTarget.texture, _gl.COLOR_ATTACHMENT0, _gl.TEXTURE_CUBE_MAP_POSITIVE_X + i );
 
 			}
 
@@ -1108,11 +1156,34 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 
 			state.bindTexture( _gl.TEXTURE_CUBE_MAP, null );
 
+		} else if ( isMultiRenderTarget ) {
+
+			const textures = renderTarget.textures;
+
+			for ( let i = 0, il = textures.length; i < il; i ++ ) {
+
+				const attachment = textures[ i ];
+				const attachmentProperties = properties.get( attachment );
+
+				state.bindTexture( _gl.TEXTURE_2D, attachmentProperties.__webglTexture );
+				setTextureParameters( _gl.TEXTURE_2D, attachment, supportsMips );
+				setupFrameBufferTexture( renderTargetProperties.__webglFramebuffer, renderTarget, attachment, _gl.COLOR_ATTACHMENT0 + i, _gl.TEXTURE_2D );
+
+				if ( textureNeedsGenerateMipmaps( renderTarget.texture, supportsMips ) ) {
+
+					generateMipmap( _gl.TEXTURE_2D, attachment, renderTarget.width, renderTarget.height );
+
+				}
+
+			}
+
+			state.bindTexture( _gl.TEXTURE_2D, null );
+
 		} else {
 
 			state.bindTexture( _gl.TEXTURE_2D, textureProperties.__webglTexture );
 			setTextureParameters( _gl.TEXTURE_2D, renderTarget.texture, supportsMips );
-			setupFrameBufferTexture( renderTargetProperties.__webglFramebuffer, renderTarget, _gl.COLOR_ATTACHMENT0, _gl.TEXTURE_2D );
+			setupFrameBufferTexture( renderTargetProperties.__webglFramebuffer, renderTarget, renderTarget.texture, _gl.COLOR_ATTACHMENT0, _gl.TEXTURE_2D );
 
 			if ( textureNeedsGenerateMipmaps( renderTarget.texture, supportsMips ) ) {
 
