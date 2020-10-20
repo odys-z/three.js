@@ -1234,7 +1234,10 @@ function WebGLRenderer( parameters ) {
 
 			const object = renderItem.object;
 			const geometry = renderItem.geometry;
-			const material = overrideMaterial === null ? renderItem.material : overrideMaterial;
+			// ody, oct 20, 2020
+			// our shader material can't pass this test and get material. Don't know why.
+			// const material = overrideMaterial === null ? renderItem.material : overrideMaterial;
+			const material = !overrideMaterial ? renderItem.material : overrideMaterial;
 			const group = renderItem.group;
 
 			if ( camera.isArrayCamera ) {
