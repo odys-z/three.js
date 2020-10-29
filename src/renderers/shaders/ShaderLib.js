@@ -239,6 +239,16 @@ const ShaderLib = {
 
 	},
 
+	cube_mrt: {
+		uniforms: mergeUniforms( [
+			UniformsLib.envmap,
+			{ opacity: { value: 1.0 } }
+		] ),
+
+		vertexShader: ShaderChunk.cube_mrt_vert,
+		fragmentShader: ShaderChunk.cube_mrt_frag
+	},
+
 	equirect: {
 
 		uniforms: {

@@ -1,6 +1,8 @@
 import { WebGLRenderTarget } from './WebGLRenderTarget.js';
 
 /**
+ * See also <a href='https://github.com/mrdoob/three.js/pull/16390/commits'>
+ * the pull request</a> for latest state.
  * @author Matt DesLauriers / @mattdesl
  * @author Takahiro https://github.com/takahirox
  */

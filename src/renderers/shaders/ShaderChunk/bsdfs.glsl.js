@@ -131,6 +131,7 @@ vec3 BRDF_Specular_GGX( const in IncidentLight incidentLight, const in vec3 view
 
 	vec3 halfDir = normalize( incidentLight.direction + viewDir );
 
+	// ody: common.glsl.js: #define saturate(a) clamp( a, 0.0, 1.0 )
 	float dotNL = saturate( dot( normal, incidentLight.direction ) );
 	float dotNV = saturate( dot( normal, viewDir ) );
 	float dotNH = saturate( dot( normal, halfDir ) );
@@ -277,7 +278,9 @@ vec3 BRDF_Specular_GGX_Environment( const in vec3 viewDir, const in vec3 normal,
 // Fdez-Agüera's "Multiple-Scattering Microfacet Model for Real-Time Image Based Lighting"
 // Approximates multiscattering in order to preserve energy.
 // http://www.jcgt.org/published/0008/01/03/
-void BRDF_Specular_Multiscattering_Environment( const in GeometricContext geometry, const in vec3 specularColor, const in float roughness, inout vec3 singleScatter, inout vec3 multiScatter ) {
+void BRDF_Specular_Multiscattering_Environment( const in GeometricContext geometry,
+	const in vec3 specularColor, const in float roughness,
+	inout vec3 singleScatter, inout vec3 multiScatter ) {
 
 	float dotNV = saturate( dot( geometry.normal, geometry.viewDir ) );
 

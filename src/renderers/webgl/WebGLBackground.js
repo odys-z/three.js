@@ -65,10 +65,12 @@ function WebGLBackground( renderer, cubemaps, state, objects, premultipliedAlpha
 				boxMesh = new Mesh(
 					new BoxBufferGeometry( 1, 1, 1 ),
 					new ShaderMaterial( {
-						name: 'BackgroundCubeMaterial',
+						name: 'BgCubeMrtMaterial',
 						uniforms: cloneUniforms( ShaderLib.cube.uniforms ),
-						vertexShader: ShaderLib.cube.vertexShader,
-						fragmentShader: ShaderLib.cube.fragmentShader,
+						// vertexShader: ShaderLib.cube.vertexShader,
+						// fragmentShader: ShaderLib.cube.fragmentShader,
+						vertexShader: ShaderLib.cube_mrt.vertexShader,
+						fragmentShader: ShaderLib.cube_mrt.fragmentShader,
 						side: BackSide,
 						depthTest: false,
 						depthWrite: false,
