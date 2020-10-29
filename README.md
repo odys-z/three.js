@@ -1,3 +1,8 @@
+Change Log
+----------
+
+Extending MRT according to the [pull request](https://github.com/mrdoob/three.js/pull/16390)
+
 three.js
 ========
 
