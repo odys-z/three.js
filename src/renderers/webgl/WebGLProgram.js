@@ -681,8 +681,14 @@ function WebGLProgram( renderer, cacheKey, parameters, bindingStates ) {
 
 		prefixFragment = [
 			'#define varying in',
-			( parameters.glslVersion === GLSL3 ) ? '' : 'out highp vec4 pc_fragColor;',
-			( parameters.glslVersion === GLSL3 ) ? '' : '#define gl_FragColor pc_fragColor',
+			// the original logic is correct?
+			// ( parameters.glslVersion === GLSL3 ) ? '' : 'out highp vec4 pc_fragColor;',
+			// ( parameters.glslVersion === GLSL3 ) ? '' : '#define gl_FragColor pc_fragColor',
+			( parameters.glslVersion === GLSL3 ) ?
+			'layout(location = 0) out highp vec4 pc_fragColor;\n' +
+			'layout(location = 1) out highp vec4 xColor;\n' +
+			'#define gl_FragColor pc_fragColor' : '',
+
 			'#define gl_FragDepthEXT gl_FragDepth',
 			'#define texture2D texture',
 			'#define textureCube texture',

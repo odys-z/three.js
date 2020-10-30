@@ -131,7 +131,13 @@ import shadow_vert from './ShaderLib/shadow_vert.glsl.js';
 import sprite_frag from './ShaderLib/sprite_frag.glsl.js';
 import sprite_vert from './ShaderLib/sprite_vert.glsl.js';
 
+import common_mrt from './ShaderChunk/common_mrt.glsl.js';
+import meshphong_mrt_frag from './ShaderLib/meshphong_mrt_frag.glsl.js';
+import meshphong_mrt_vert from './ShaderLib/meshphong_mrt_vert.glsl.js';
+import _mrt_end from './ShaderChunk/_mrt_end.glsl.js';
+
 export const ShaderChunk = {
+	_mrt_end, common_mrt,
 	alphamap_fragment: alphamap_fragment,
 	alphamap_pars_fragment: alphamap_pars_fragment,
 	alphatest_fragment: alphatest_fragment,
@@ -251,8 +257,8 @@ export const ShaderChunk = {
 	meshmatcap_vert: meshmatcap_vert,
 	meshtoon_frag: meshtoon_frag,
 	meshtoon_vert: meshtoon_vert,
-	meshphong_frag: meshphong_frag,
-	meshphong_vert: meshphong_vert,
+	meshphong_frag: meshphong_frag,                                meshphong_mrt_frag,
+	meshphong_vert: meshphong_vert,                                meshphong_mrt_vert,
 	meshphysical_frag: meshphysical_frag,
 	meshphysical_vert: meshphysical_vert,
 	normal_frag: normal_frag,

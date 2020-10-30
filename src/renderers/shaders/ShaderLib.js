@@ -66,8 +66,8 @@ const ShaderLib = {
 			}
 		] ),
 
-		vertexShader: ShaderChunk.meshphong_vert,
-		fragmentShader: ShaderChunk.meshphong_frag
+		vertexShader: ShaderChunk.meshphong_mrt_vert,
+		fragmentShader: ShaderChunk.meshphong_mrt_frag
 
 	},
 
