@@ -54,6 +54,7 @@
     }
   },
   "scripts": {
+    "cp": "cp build/three.module.js ../x-visual-jsdoc/packages/three/three.module-MRTSupport.js",
     "start": "npm run dev",
     "test": "npm run test-lint && npm run test-unit",
     "build": "rollup -c utils/build/rollup.config.js",

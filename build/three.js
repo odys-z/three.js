@@ -13223,6 +13223,8 @@
 		fragmentShader = replaceClippingPlaneNums(fragmentShader, parameters);
 		vertexShader = unrollLoops(vertexShader);
 		fragmentShader = unrollLoops(fragmentShader);
+		var vertexGlsl;
+		var fragmentGlsl;
 
 		if (parameters.isWebGL2 && parameters.isRawShaderMaterial !== true) {
 			// GLSL 3.0 conversion for built-in materials and ShaderMaterial
@@ -13231,12 +13233,18 @@
 			prefixFragment = ['#define varying in', // the original logic is correct?
 			// ( parameters.glslVersion === GLSL3 ) ? '' : 'out highp vec4 pc_fragColor;',
 			// ( parameters.glslVersion === GLSL3 ) ? '' : '#define gl_FragColor pc_fragColor',
-			parameters.glslVersion === GLSL3 ? 'layout(location = 0) out highp vec4 pc_fragColor;\n' + 'layout(location = 1) out highp vec4 xColor;\n' + '#define gl_FragColor pc_fragColor' : '', '#define gl_FragDepthEXT gl_FragDepth', '#define texture2D texture', '#define textureCube texture', '#define texture2DProj textureProj', '#define texture2DLodEXT textureLod', '#define texture2DProjLodEXT textureProjLod', '#define textureCubeLodEXT textureLod', '#define texture2DGradEXT textureGrad', '#define texture2DProjGradEXT textureProjGrad', '#define textureCubeGradEXT textureGrad'].join('\n') + '\n' + prefixFragment;
-		}
+			parameters.glslVersion === GLSL3 ? 'layout(location = 0) out highp vec4 pc_fragColor;\n' + 'layout(location = 1) out highp vec4 xColor;\n' + '#define gl_FragColor pc_fragColor' : '', '#define gl_FragDepthEXT gl_FragDepth', '#define texture2D texture', '#define textureCube texture', '#define texture2DProj textureProj', '#define texture2DLodEXT textureLod', '#define texture2DProjLodEXT textureProjLod', '#define textureCubeLodEXT textureLod', '#define texture2DGradEXT textureGrad', '#define texture2DProjGradEXT textureProjGrad', '#define textureCubeGradEXT textureGrad'].join('\n') + '\n' + prefixFragment; // ody
 
-		var vertexGlsl = versionString + prefixVertex + vertexShader;
-		var fragmentGlsl = versionString + prefixFragment + fragmentShader; // console.log( '*VERTEX*', vertexGlsl );
+			vertexGlsl = versionString + prefixVertex + vertexShader;
+			fragmentGlsl = versionString + prefixFragment + fragmentShader;
+		} else {
+			vertexGlsl = prefixVertex + vertexShader;
+			fragmentGlsl = prefixFragment + fragmentShader;
+		} // const vertexGlsl = versionString + prefixVertex + vertexShader;
+		// const fragmentGlsl = versionString + prefixFragment + fragmentShader;
+		// console.log( '*VERTEX*', vertexGlsl );
 		// console.log( '*FRAGMENT*', fragmentGlsl );
+
 
 		var glVertexShader = WebGLShader(gl, 35633, vertexGlsl);
 		var glFragmentShader = WebGLShader(gl, 35632, fragmentGlsl);
@@ -14671,7 +14679,10 @@
 							}
 						}
 					} else if (material.visible) {
-						var _depthMaterial = getDepthMaterial(object, geometry, material, light, shadowCamera.near, shadowCamera.far, type);
+						var _depthMaterial = getDepthMaterial(object, geometry, material, light, shadowCamera.near, shadowCamera.far, type); // ody
+
+
+						_depthMaterial.glslVersion = material.glslVersion;
 
 						_renderer.renderBufferDirect(shadowCamera, null, geometry, _depthMaterial, object, null);
 					}
