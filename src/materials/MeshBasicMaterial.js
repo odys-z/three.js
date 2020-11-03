@@ -38,7 +38,8 @@ function MeshBasicMaterial( parameters ) {
 
 	Material.call( this );
 
-	this.type = 'MeshBasicMaterial';
+	this.type = parameters && parameters.isMrt ?
+		'MeshBasicMaterial_mrt' : 'MeshBasicMaterial';
 
 	this.color = new Color( 0xffffff ); // emissive
 

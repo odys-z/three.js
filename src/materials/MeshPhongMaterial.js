@@ -54,9 +54,8 @@ import { Color } from '../math/Color.js';
 function MeshPhongMaterial( parameters ) {
 
 	Material.call( this );
-	this.glslVersion = GLSL3;
 
-	this.type = 'MeshPhongMaterial';
+	this.type = parameters && parameters.isMrt ? 'MeshPhongMaterial_mrt' : 'MeshPhongMaterial';
 
 	this.color = new Color( 0xffffff ); // diffuse
 	this.specular = new Color( 0x111111 );

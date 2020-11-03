@@ -1,3 +1,4 @@
+import { GLSL3 } from '../constants.js';
 import { Camera } from '../cameras/Camera.js';
 import { Vector3 } from '../math/Vector3.js';
 import { LineSegments } from '../objects/LineSegments.js';
@@ -18,10 +19,11 @@ const _camera = /*@__PURE__*/ new Camera();
 
 class CameraHelper extends LineSegments {
 
-	constructor( camera ) {
+	constructor( camera, isMrt ) {
 
 		const geometry = new BufferGeometry();
-		const material = new LineBasicMaterial( { color: 0xffffff, vertexColors: true, toneMapped: false } );
+		const material = new LineBasicMaterial( { color: 0xffffff, vertexColors: true, toneMapped: false,
+		 										isMrt } );
 
 		const vertices = [];
 		const colors = [];

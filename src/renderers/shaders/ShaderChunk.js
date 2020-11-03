@@ -100,8 +100,6 @@ import background_frag from './ShaderLib/background_frag.glsl.js';
 import background_vert from './ShaderLib/background_vert.glsl.js';
 import cube_frag from './ShaderLib/cube_frag.glsl.js';
 import cube_vert from './ShaderLib/cube_vert.glsl.js';
-import cube_mrt_frag from './ShaderLib/cube_mrt_frag.glsl.js';
-import cube_mrt_vert from './ShaderLib/cube_mrt_vert.glsl.js';
 import depth_frag from './ShaderLib/depth_frag.glsl.js';
 import depth_vert from './ShaderLib/depth_vert.glsl.js';
 import distanceRGBA_frag from './ShaderLib/distanceRGBA_frag.glsl.js';
@@ -132,8 +130,10 @@ import sprite_frag from './ShaderLib/sprite_frag.glsl.js';
 import sprite_vert from './ShaderLib/sprite_vert.glsl.js';
 
 import common_mrt from './ShaderChunk/common_mrt.glsl.js';
+import meshbasic_mrt_frag from './ShaderLib/meshbasic_mrt_frag.glsl.js';
 import meshphong_mrt_frag from './ShaderLib/meshphong_mrt_frag.glsl.js';
-import meshphong_mrt_vert from './ShaderLib/meshphong_mrt_vert.glsl.js';
+import cube_mrt_vert from './ShaderLib/cube_mrt_vert.glsl.js';
+import cube_mrt_frag from './ShaderLib/cube_mrt_frag.glsl.js';
 import _mrt_end from './ShaderChunk/_mrt_end.glsl.js';
 
 export const ShaderChunk = {
@@ -240,7 +240,6 @@ export const ShaderChunk = {
 	background_vert: background_vert,
 	cube_frag: cube_frag,
 	cube_vert: cube_vert,
-	cube_mrt_vert: cube_mrt_vert,
 	depth_frag: depth_frag,
 	depth_vert: depth_vert,
 	distanceRGBA_frag: distanceRGBA_frag,
@@ -257,8 +256,8 @@ export const ShaderChunk = {
 	meshmatcap_vert: meshmatcap_vert,
 	meshtoon_frag: meshtoon_frag,
 	meshtoon_vert: meshtoon_vert,
-	meshphong_frag: meshphong_frag,                                meshphong_mrt_frag,
-	meshphong_vert: meshphong_vert,                                meshphong_mrt_vert,
+	meshphong_frag: meshphong_frag,
+	meshphong_vert: meshphong_vert,
 	meshphysical_frag: meshphysical_frag,
 	meshphysical_vert: meshphysical_vert,
 	normal_frag: normal_frag,
@@ -268,5 +267,9 @@ export const ShaderChunk = {
 	shadow_frag: shadow_frag,
 	shadow_vert: shadow_vert,
 	sprite_frag: sprite_frag,
-	sprite_vert: sprite_vert
+	sprite_vert: sprite_vert,
+
+	meshbasic_mrt_frag,
+	meshphong_mrt_frag,
+	cube_mrt_vert, cube_mrt_frag,
 };

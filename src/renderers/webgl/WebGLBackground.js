@@ -66,6 +66,7 @@ function WebGLBackground( renderer, cubemaps, state, objects, premultipliedAlpha
 					new BoxBufferGeometry( 1, 1, 1 ),
 					new ShaderMaterial( {
 						name: 'BgCubeMrtMaterial',
+						isMrt: true,
 						uniforms: cloneUniforms( ShaderLib.cube.uniforms ),
 						// vertexShader: ShaderLib.cube.vertexShader,
 						// fragmentShader: ShaderLib.cube.fragmentShader,

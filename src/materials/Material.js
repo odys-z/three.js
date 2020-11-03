@@ -1,5 +1,5 @@
 import { EventDispatcher } from '../core/EventDispatcher.js';
-import { FrontSide, FlatShading, NormalBlending, LessEqualDepth, AddEquation, OneMinusSrcAlphaFactor, SrcAlphaFactor, AlwaysStencilFunc, KeepStencilOp } from '../constants.js';
+import { GLSL3, FrontSide, FlatShading, NormalBlending, LessEqualDepth, AddEquation, OneMinusSrcAlphaFactor, SrcAlphaFactor, AlwaysStencilFunc, KeepStencilOp } from '../constants.js';
 import { MathUtils } from '../math/MathUtils.js';
 
 let materialId = 0;
@@ -70,6 +70,8 @@ function Material() {
 
 	this.version = 0;
 
+	this.isMrt = false;
+
 }
 
 Material.prototype = Object.assign( Object.create( EventDispatcher.prototype ), {
@@ -130,6 +132,12 @@ Material.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 			} else {
 
 				this[ key ] = newValue;
+
+			}
+
+			if ( key === 'isMrt' ) {
+
+				this.glslVersion = GLSL3;
 
 			}
 

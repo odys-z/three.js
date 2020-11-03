@@ -30,7 +30,11 @@ function WebGLPrograms( renderer, cubemaps, extensions, capabilities, bindingSta
 		LineDashedMaterial: 'dashed',
 		PointsMaterial: 'points',
 		ShadowMaterial: 'shadow',
-		SpriteMaterial: 'sprite'
+		SpriteMaterial: 'sprite',
+
+		LineBasicMaterial_mrt: 'basicMrt',
+		MeshBasicMaterial_mrt: 'basicMrt',
+		MeshPhongMaterial_mrt: 'phongMrt'
 	};
 
 	const parameterNames = [

@@ -1,3 +1,3 @@
 export default /* glsl */`
-xColor = pc_fragColor;
+xColor = pc_FragColor;
 `;

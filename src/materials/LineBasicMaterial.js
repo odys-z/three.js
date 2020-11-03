@@ -16,7 +16,8 @@ function LineBasicMaterial( parameters ) {
 
 	Material.call( this );
 
-	this.type = 'LineBasicMaterial';
+	this.type = parameters && parameters.isMrt ?
+		'LineBasicMaterial_mrt' : 'LineBasicMaterial';
 
 	this.color = new Color( 0xffffff );
 

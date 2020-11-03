@@ -24,6 +24,22 @@ const ShaderLib = {
 
 	},
 
+	basicMrt: {
+
+		uniforms: mergeUniforms( [
+			UniformsLib.common,
+			UniformsLib.specularmap,
+			UniformsLib.envmap,
+			UniformsLib.aomap,
+			UniformsLib.lightmap,
+			UniformsLib.fog
+		] ),
+
+		vertexShader: ShaderChunk.meshbasic_vert,
+		fragmentShader: ShaderChunk.meshbasic_mrt_frag
+
+	},
+
 	lambert: {
 
 		uniforms: mergeUniforms( [
@@ -66,7 +82,33 @@ const ShaderLib = {
 			}
 		] ),
 
-		vertexShader: ShaderChunk.meshphong_mrt_vert,
+		vertexShader: ShaderChunk.meshphong_vert,
+		fragmentShader: ShaderChunk.meshphong_frag
+
+	},
+
+	phongMrt: {
+
+		uniforms: mergeUniforms( [
+			UniformsLib.common,
+			UniformsLib.specularmap,
+			UniformsLib.envmap,
+			UniformsLib.aomap,
+			UniformsLib.lightmap,
+			UniformsLib.emissivemap,
+			UniformsLib.bumpmap,
+			UniformsLib.normalmap,
+			UniformsLib.displacementmap,
+			UniformsLib.fog,
+			UniformsLib.lights,
+			{
+				emissive: { value: new Color( 0x000000 ) },
+				specular: { value: new Color( 0x111111 ) },
+				shininess: { value: 30 }
+			}
+		] ),
+
+		vertexShader: ShaderChunk.meshphong_vert,
 		fragmentShader: ShaderChunk.meshphong_mrt_frag
 
 	},
