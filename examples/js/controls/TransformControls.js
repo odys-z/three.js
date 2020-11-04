@@ -1,5 +1,3 @@
-console.warn( "THREE.TransformControls: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
-
 THREE.TransformControls = function ( camera, domElement ) {
 
 	if ( domElement === undefined ) {
@@ -125,7 +123,6 @@ THREE.TransformControls = function ( camera, domElement ) {
 
 	{
 
-		domElement.addEventListener( "touchstart", onTouchStart, false );
 		domElement.addEventListener( "pointerdown", onPointerDown, false );
 		domElement.addEventListener( "pointermove", onPointerHover, false );
 		scope.domElement.ownerDocument.addEventListener( "pointerup", onPointerUp, false );
@@ -134,7 +131,6 @@ THREE.TransformControls = function ( camera, domElement ) {
 
 	this.dispose = function () {
 
-		domElement.removeEventListener( "touchstart", onTouchStart );
 		domElement.removeEventListener( "pointerdown", onPointerDown );
 		domElement.removeEventListener( "pointermove", onPointerHover );
 		scope.domElement.ownerDocument.removeEventListener( "pointermove", onPointerMove );
@@ -618,6 +614,7 @@ THREE.TransformControls = function ( camera, domElement ) {
 		switch ( event.pointerType ) {
 
 			case 'mouse':
+			case 'pen':
 				scope.pointerHover( getPointer( event ) );
 				break;
 
@@ -629,6 +626,7 @@ THREE.TransformControls = function ( camera, domElement ) {
 
 		if ( ! scope.enabled ) return;
 
+		scope.domElement.style.touchAction = 'none'; // disable touch scroll
 		scope.domElement.ownerDocument.addEventListener( "pointermove", onPointerMove, false );
 
 		scope.pointerHover( getPointer( event ) );
@@ -648,17 +646,10 @@ THREE.TransformControls = function ( camera, domElement ) {
 
 		if ( ! scope.enabled ) return;
 
+		scope.domElement.style.touchAction = '';
 		scope.domElement.ownerDocument.removeEventListener( "pointermove", onPointerMove, false );
 
 		scope.pointerUp( getPointer( event ) );
-
-	}
-
-	function onTouchStart( event ) {
-
-		if ( scope.enabled === false ) return;
-
-		event.preventDefault(); // prevent scrolling
 
 	}
 

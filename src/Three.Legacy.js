@@ -40,7 +40,7 @@ import { SkeletonHelper } from './helpers/SkeletonHelper.js';
 import { BoxGeometry } from './geometries/BoxGeometry.js';
 import { EdgesGeometry } from './geometries/EdgesGeometry.js';
 import { ExtrudeGeometry } from './geometries/ExtrudeGeometry.js';
-import { ExtrudeBufferGeometry } from './geometries/ExtrudeGeometry.js';
+import { ExtrudeBufferGeometry } from './geometries/ExtrudeBufferGeometry.js';
 import { ShapeGeometry } from './geometries/ShapeGeometry.js';
 import { WireframeGeometry } from './geometries/WireframeGeometry.js';
 import { Light } from './lights/Light.js';
@@ -50,7 +50,6 @@ import { FileLoader } from './loaders/FileLoader.js';
 import { AudioLoader } from './loaders/AudioLoader.js';
 import { CubeTextureLoader } from './loaders/CubeTextureLoader.js';
 import { DataTextureLoader } from './loaders/DataTextureLoader.js';
-import { ObjectLoader } from './loaders/ObjectLoader.js';
 import { TextureLoader } from './loaders/TextureLoader.js';
 import { Material } from './materials/Material.js';
 import { LineBasicMaterial } from './materials/LineBasicMaterial.js';
@@ -467,17 +466,6 @@ export function BinaryTextureLoader( manager ) {
 	return new DataTextureLoader( manager );
 
 }
-
-Object.assign( ObjectLoader.prototype, {
-
-	setTexturePath: function ( value ) {
-
-		console.warn( 'THREE.ObjectLoader: .setTexturePath() has been renamed to .setResourcePath().' );
-		return this.setResourcePath( value );
-
-	}
-
-} );
 
 //
 
@@ -2115,6 +2103,13 @@ CubeCamera.prototype.updateCubeMap = function ( renderer, scene ) {
 
 	console.warn( 'THREE.CubeCamera: .updateCubeMap() is now .update().' );
 	return this.update( renderer, scene );
+
+};
+
+CubeCamera.prototype.clear = function ( renderer, color, depth, stencil ) {
+
+	console.warn( 'THREE.CubeCamera: .clear() is now .renderTarget.clear().' );
+	return this.renderTarget.clear( renderer, color, depth, stencil );
 
 };
 
