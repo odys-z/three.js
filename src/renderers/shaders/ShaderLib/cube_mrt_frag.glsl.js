@@ -17,7 +17,6 @@ void main() {
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
 
-	xColor.rgba = gl_FragColor.bgra;
 	#include <_mrt_end>
 }
 `;

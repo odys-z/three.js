@@ -263,6 +263,18 @@ const ShaderLib = {
 		fragmentShader: ShaderChunk.background_frag
 
 	},
+
+	background_mrt: {
+
+		uniforms: {
+			uvTransform: { value: new Matrix3() },
+			t2D: { value: null },
+		},
+
+		vertexShader: ShaderChunk.background_vert,
+		fragmentShader: ShaderChunk.background_mrt_frag
+
+	},
 	/* -------------------------------------------------------------------------
 	//	Cube map shader
 	 ------------------------------------------------------------------------- */

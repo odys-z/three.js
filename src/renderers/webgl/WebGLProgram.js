@@ -686,7 +686,6 @@ function WebGLProgram( renderer, cacheKey, parameters, bindingStates ) {
 			// the original logic is correct?
 			// ( parameters.glslVersion === GLSL3 ) ? '' : 'out highp vec4 pc_fragColor;',
 			// ( parameters.glslVersion === GLSL3 ) ? '' : '#define gl_FragColor pc_fragColor',
-			// better use this in common_mrt?
 			( parameters.glslVersion === GLSL3 ) ?
 				'layout(location = 0) out highp vec4 pc_FragColor;\n' +
 			'layout(location = 1) out highp vec4 xColor;\n' +
@@ -714,10 +713,6 @@ function WebGLProgram( renderer, cacheKey, parameters, bindingStates ) {
 		fragmentGlsl = prefixFragment + fragmentShader;
 
 	}
-	// const vertexGlsl = versionString + prefixVertex + vertexShader;
-	// const fragmentGlsl = versionString + prefixFragment + fragmentShader;
-	// console.log( '*VERTEX*', vertexGlsl );
-	// console.log( '*FRAGMENT*', fragmentGlsl );
 
 	const glVertexShader = WebGLShader( gl, gl.VERTEX_SHADER, vertexGlsl );
 	const glFragmentShader = WebGLShader( gl, gl.FRAGMENT_SHADER, fragmentGlsl );

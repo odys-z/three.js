@@ -7,7 +7,7 @@ import { Mesh } from '../../objects/Mesh.js';
 import { ShaderLib } from '../shaders/ShaderLib.js';
 import { cloneUniforms } from '../shaders/UniformsUtils.js';
 
-function WebGLBackground( renderer, cubemaps, state, objects, premultipliedAlpha ) {
+function WebGLBackground( renderer, cubemaps, state, objects, premultipliedAlpha, isMRT ) {
 
 	const clearColor = new Color( 0x000000 );
 	let clearAlpha = 0;
@@ -18,6 +18,8 @@ function WebGLBackground( renderer, cubemaps, state, objects, premultipliedAlpha
 	let currentBackground = null;
 	let currentBackgroundVersion = 0;
 	let currentTonemapping = null;
+
+	let isMrt = isMRT || isMRT === undefined;
 
 	function render( renderList, scene, camera, forceClear ) {
 
@@ -136,10 +138,11 @@ function WebGLBackground( renderer, cubemaps, state, objects, premultipliedAlpha
 				planeMesh = new Mesh(
 					new PlaneBufferGeometry( 2, 2 ),
 					new ShaderMaterial( {
+						isMrt: !!isMrt,
 						name: 'BackgroundMaterial',
 						uniforms: cloneUniforms( ShaderLib.background.uniforms ),
-						vertexShader: ShaderLib.background.vertexShader,
-						fragmentShader: ShaderLib.background.fragmentShader,
+						vertexShader: !!isMrt ? ShaderLib.background_mrt.vertexShader : ShaderLib.background.vertexShader,
+						fragmentShader: !!isMrt ? ShaderLib.background_mrt.fragmentShader : ShaderLib.background.fragmentShader,
 						side: FrontSide,
 						depthTest: false,
 						depthWrite: false,
