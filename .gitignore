@@ -19,5 +19,6 @@ test/*
 test/*.cmd
 test/unit/build
 
+build
 
 **/node_modules
