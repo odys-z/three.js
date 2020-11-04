@@ -13,9 +13,6 @@ import {
 	StencilOp
 } from '../constants';
 
-// Materials //////////////////////////////////////////////////////////////////////////////////
-export let MaterialIdCount: number;
-
 export interface MaterialParameters {
 	alphaTest?: number;
 	blendDst?: BlendingDstFactor;
@@ -142,7 +139,7 @@ export class Material extends EventDispatcher {
 	 * The pairs are defined in both vertex and fragment shaders. Default is undefined.
 	 * @default undefined
 	 */
-	defines: { [key: string]: any };
+	defines: undefined | { [key: string]: any };
 
 	/**
 	 * Which depth function to use. Default is {@link LessEqualDepth}. See the depth mode constants for all possible values.
