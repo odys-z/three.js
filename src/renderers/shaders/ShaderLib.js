@@ -264,14 +264,14 @@ const ShaderLib = {
 
 	},
 
-	background_mrt: {
+	backgroundMrt: {
 
 		uniforms: {
 			uvTransform: { value: new Matrix3() },
 			t2D: { value: null },
 		},
 
-		vertexShader: ShaderChunk.background_vert,
+		vertexShader: ShaderChunk.background_mrt_vert,
 		fragmentShader: ShaderChunk.background_mrt_frag
 
 	},
