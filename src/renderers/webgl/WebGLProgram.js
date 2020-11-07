@@ -714,6 +714,10 @@ function WebGLProgram( renderer, cacheKey, parameters, bindingStates ) {
 
 	}
 
+	if (WebGLProgram.debug) {
+		console.log(vertexGlsl, fragmentGlsl);
+	}
+
 	const glVertexShader = WebGLShader( gl, gl.VERTEX_SHADER, vertexGlsl );
 	const glFragmentShader = WebGLShader( gl, gl.FRAGMENT_SHADER, fragmentGlsl );
 

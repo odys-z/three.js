@@ -5,6 +5,7 @@ export { WebGLMultisampleRenderTarget } from './renderers/WebGLMultisampleRender
 export { WebGLCubeRenderTarget } from './renderers/WebGLCubeRenderTarget.js';
 export { WebGLRenderTarget } from './renderers/WebGLRenderTarget.js';
 export { WebGLRenderer } from './renderers/WebGLRenderer.js';
+export { WebGLProgram } from './renderers/webgl/WebGLProgram.js';
 export { WebGL1Renderer } from './renderers/WebGL1Renderer.js';
 export { ShaderLib } from './renderers/shaders/ShaderLib.js';
 export { UniformsLib } from './renderers/shaders/UniformsLib.js';

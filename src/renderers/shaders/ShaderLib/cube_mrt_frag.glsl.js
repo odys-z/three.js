@@ -2,13 +2,13 @@ export default /* glsl */`
 #include <envmap_common_pars_fragment>
 uniform float opacity;
 
-varying vec3 vWorldDirection;
+in vec3 vwDir;
 
 #include <cube_uv_reflection_fragment>
 
 void main() {
 
-	vec3 vReflect = vWorldDirection;
+	vec3 vReflect = vwDir;
 	#include <envmap_fragment>
 
 	gl_FragColor = envColor;

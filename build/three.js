@@ -10252,11 +10252,11 @@
 
 	var background_mrt_vert = "#include <common>\nout vec3 vNormal;\nout vec3 vwDir;\nvoid main() {\n\tvNormal = normal;\n\tvwDir = transformDirection( position, modelMatrix );\n\tvec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );\n\tgl_Position = projectionMatrix * mvPosition;\n\tgl_Position.z = gl_Position.w;\n}";
 
-	var background_mrt_frag = "#define RECIPROCAL_PI 0.3183098861837907\n#define RECIPROCAL_PI2 0.15915494309189535\nuniform float opacity;\nuniform sampler2D u_tex0;\nin vec3 vwDir;\nvec2 equirectUv( in vec3 dir ) {\n\tfloat u = atan( dir.z, dir.x ) * RECIPROCAL_PI2 + 0.5;\n\tfloat v = asin( clamp( dir.y, - 1.0, 1.0 ) ) * RECIPROCAL_PI + 0.5;\n\treturn vec2( u, v );\n}\nvoid main() {\n\tvec3 wdir = normalize( vwDir );\n\tvec2 sampleUV = equirectUv( wdir );\n\tpc_FragColor = texture( u_tex0, sampleUV );\n\tpc_FragColor.a *= opacity;\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <_mrt_end>\n}";
+	var background_mrt_frag = "#define RECIPROCAL_PI 0.3183098861837907\n#define RECIPROCAL_PI2 0.15915494309189535\nuniform float opacity;\nuniform sampler2D envMap;\nin vec3 vwDir;\nvec2 equirectUv( in vec3 dir ) {\n\tfloat u = atan( dir.z, dir.x ) * RECIPROCAL_PI2 + 0.5;\n\tfloat v = asin( clamp( dir.y, - 1.0, 1.0 ) ) * RECIPROCAL_PI + 0.5;\n\treturn vec2( u, v );\n}\nvoid main() {\n\tvec3 wdir = normalize( vwDir );\n\tvec2 sampleUV = equirectUv( wdir );\n\tpc_FragColor = texture( envMap, sampleUV );\n\tpc_FragColor.a *= opacity;\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <_mrt_end>\n}";
 
-	var cube_mrt_vert = "out vec3 vWorldDirection;\n#include <common>\nvoid main() {\n\tvWorldDirection = transformDirection( position, modelMatrix );\n\t#include <begin_vertex>\n\t#include <project_vertex>\n\tgl_Position.z = gl_Position.w;\n}";
+	var cube_mrt_vert = "out vec3 vwDir;\n#include <common>\nvoid main() {\n\tvwDir = transformDirection( position, modelMatrix );\n\t#include <begin_vertex>\n\t#include <project_vertex>\n\tgl_Position.z = gl_Position.w;\n}";
 
-	var cube_mrt_frag = "#include <envmap_common_pars_fragment>\nuniform float opacity;\nvarying vec3 vWorldDirection;\n#include <cube_uv_reflection_fragment>\nvoid main() {\n\tvec3 vReflect = vWorldDirection;\n\t#include <envmap_fragment>\n\tgl_FragColor = envColor;\n\tgl_FragColor.a *= opacity;\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <_mrt_end>\n}";
+	var cube_mrt_frag = "#include <envmap_common_pars_fragment>\nuniform float opacity;\nin vec3 vwDir;\n#include <cube_uv_reflection_fragment>\nvoid main() {\n\tvec3 vReflect = vwDir;\n\t#include <envmap_fragment>\n\tgl_FragColor = envColor;\n\tgl_FragColor.a *= opacity;\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <_mrt_end>\n}";
 
 	var _mrt_end = "xColor = pc_FragColor;";
 
@@ -10958,7 +10958,7 @@
 				renderer.clear(renderer.autoClearColor, renderer.autoClearDepth, renderer.autoClearStencil);
 			}
 
-			if (background && (background.isCubeTexture || background.isWebGLCubeRenderTarget || background.mapping === CubeUVReflectionMapping)) {
+			if (background && (background.isCubeTexture || background.isWebGLCubeRenderTarget || background.mapping === CubeUVReflectionMapping || background.isEquirect)) {
 				if (boxMesh === undefined) {
 					boxMesh = new Mesh(new BoxBufferGeometry(1, 1, 1), new ShaderMaterial({
 						name: 'BgCubeMrtMaterial',
@@ -10966,8 +10966,8 @@
 						uniforms: cloneUniforms(ShaderLib.cube.uniforms),
 						// vertexShader: ShaderLib.cube.vertexShader,
 						// fragmentShader: ShaderLib.cube.fragmentShader,
-						vertexShader: ShaderLib.cube_mrt.vertexShader,
-						fragmentShader: ShaderLib.cube_mrt.fragmentShader,
+						vertexShader: background.isEquirect ? ShaderLib.backgroundMrt.vertexShader : ShaderLib.cube_mrt.vertexShader,
+						fragmentShader: background.isEquirect ? ShaderLib.backgroundMrt.fragmentShader : ShaderLib.cube_mrt.fragmentShader,
 						side: BackSide,
 						depthTest: false,
 						depthWrite: false,
@@ -11008,16 +11008,17 @@
 				renderList.unshift(boxMesh, boxMesh.geometry, boxMesh.material, 0, 0, null);
 			} else if (background && background.isTexture) {
 				if (planeMesh === undefined) {
-					if (!background.isEquirect && isMrt) {
-						console.warn("In branch mrt-further, background only support equirenctangular texture in MRT mode.");
-					}
-
+					// if ( ! background.isEquirect && isMrt ) {
+					// 	console.warn("In branch mrt-further, background only support equirenctangular texture in MRT mode.");
+					// }
 					planeMesh = new Mesh(new PlaneBufferGeometry(2, 2), new ShaderMaterial({
 						isMrt: isMrt,
 						name: 'BackgroundMaterial',
 						uniforms: cloneUniforms(ShaderLib.background.uniforms),
-						vertexShader: isMrt ? ShaderLib.backgroundMrt.vertexShader : ShaderLib.background.vertexShader,
-						fragmentShader: isMrt ? ShaderLib.backgroundMrt.fragmentShader : ShaderLib.background.fragmentShader,
+						// vertexShader: isMrt ? ShaderLib.backgroundMrt.vertexShader : ShaderLib.background.vertexShader,
+						// fragmentShader: isMrt ? ShaderLib.backgroundMrt.fragmentShader : ShaderLib.background.fragmentShader,
+						vertexShader: ShaderLib.background.vertexShader,
+						fragmentShader: ShaderLib.background.fragmentShader,
 						side: FrontSide,
 						depthTest: false,
 						depthWrite: false,
@@ -13289,6 +13290,10 @@
 		} else {
 			vertexGlsl = prefixVertex + vertexShader;
 			fragmentGlsl = prefixFragment + fragmentShader;
+		}
+
+		if (WebGLProgram.debug) {
+			console.log(vertexGlsl, fragmentGlsl);
 		}
 
 		var glVertexShader = WebGLShader(gl, 35633, vertexGlsl);
@@ -17632,7 +17637,7 @@
 			materials = new WebGLMaterials(properties);
 			renderLists = new WebGLRenderLists(properties);
 			renderStates = new WebGLRenderStates(extensions, capabilities);
-			background = new WebGLBackground(_this, cubemaps, state, objects, _premultipliedAlpha, parameters.isMrtBackground);
+			background = new WebGLBackground(_this, cubemaps, state, objects, _premultipliedAlpha, parameters.isMrt);
 			bufferRenderer = new WebGLBufferRenderer(_gl, extensions, info, capabilities);
 			indexedBufferRenderer = new WebGLIndexedBufferRenderer(_gl, extensions, info, capabilities);
 			info.programs = programCache.programs;
@@ -37494,6 +37499,7 @@
 	exports.WebGLCubeRenderTarget = WebGLCubeRenderTarget;
 	exports.WebGLMultiRenderTarget = WebGLMultiRenderTarget;
 	exports.WebGLMultisampleRenderTarget = WebGLMultisampleRenderTarget;
+	exports.WebGLProgram = WebGLProgram;
 	exports.WebGLRenderTarget = WebGLRenderTarget;
 	exports.WebGLRenderTargetCube = WebGLRenderTargetCube;
 	exports.WebGLRenderer = WebGLRenderer;

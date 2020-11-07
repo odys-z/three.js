@@ -3,7 +3,7 @@ export default /* glsl */`
 #define RECIPROCAL_PI2 0.15915494309189535
 
 uniform float opacity;
-uniform sampler2D u_tex0;
+uniform sampler2D envMap;
 
 in vec3 vwDir;
 
@@ -17,7 +17,7 @@ void main() {
 
 	vec3 wdir = normalize( vwDir );
 	vec2 sampleUV = equirectUv( wdir );
-	pc_FragColor = texture( u_tex0, sampleUV );
+	pc_FragColor = texture( envMap, sampleUV );
 
 	pc_FragColor.a *= opacity;
 

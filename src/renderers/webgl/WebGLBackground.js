@@ -20,6 +20,7 @@ function WebGLBackground( renderer, cubemaps, state, objects, premultipliedAlpha
 	let currentTonemapping = null;
 
 	let isMrt = isMRT || isMRT === undefined;
+	let isEquirect = isMRT || isMRT === undefined;
 
 	function render( renderList, scene, camera, forceClear ) {
 
@@ -60,7 +61,8 @@ function WebGLBackground( renderer, cubemaps, state, objects, premultipliedAlpha
 
 		}
 
-		if ( background && ( background.isCubeTexture || background.isWebGLCubeRenderTarget || background.mapping === CubeUVReflectionMapping ) ) {
+		if ( background && ( background.isCubeTexture || background.isWebGLCubeRenderTarget
+			|| background.mapping === CubeUVReflectionMapping || background.isEquirect ) ) {
 
 			if ( boxMesh === undefined ) {
 
@@ -72,8 +74,8 @@ function WebGLBackground( renderer, cubemaps, state, objects, premultipliedAlpha
 						uniforms: cloneUniforms( ShaderLib.cube.uniforms ),
 						// vertexShader: ShaderLib.cube.vertexShader,
 						// fragmentShader: ShaderLib.cube.fragmentShader,
-						vertexShader: ShaderLib.cube_mrt.vertexShader,
-						fragmentShader: ShaderLib.cube_mrt.fragmentShader,
+						vertexShader: background.isEquirect ? ShaderLib.backgroundMrt.vertexShader : ShaderLib.cube_mrt.vertexShader,
+						fragmentShader: background.isEquirect ? ShaderLib.backgroundMrt.fragmentShader : ShaderLib.cube_mrt.fragmentShader,
 						side: BackSide,
 						depthTest: false,
 						depthWrite: false,
@@ -137,9 +139,9 @@ function WebGLBackground( renderer, cubemaps, state, objects, premultipliedAlpha
 
 			if ( planeMesh === undefined ) {
 
-				if ( ! background.isEquirect && isMrt ) {
-					console.warn("In branch mrt-further, background only support equirenctangular texture in MRT mode.");
-				}
+				// if ( ! background.isEquirect && isMrt ) {
+				// 	console.warn("In branch mrt-further, background only support equirenctangular texture in MRT mode.");
+				// }
 
 				planeMesh = new Mesh(
 					new PlaneBufferGeometry( 2, 2 ),
@@ -147,8 +149,10 @@ function WebGLBackground( renderer, cubemaps, state, objects, premultipliedAlpha
 						isMrt: isMrt,
 						name: 'BackgroundMaterial',
 						uniforms: cloneUniforms( ShaderLib.background.uniforms ),
-						vertexShader: isMrt ? ShaderLib.backgroundMrt.vertexShader : ShaderLib.background.vertexShader,
-						fragmentShader: isMrt ? ShaderLib.backgroundMrt.fragmentShader : ShaderLib.background.fragmentShader,
+						// vertexShader: isMrt ? ShaderLib.backgroundMrt.vertexShader : ShaderLib.background.vertexShader,
+						// fragmentShader: isMrt ? ShaderLib.backgroundMrt.fragmentShader : ShaderLib.background.fragmentShader,
+						vertexShader: ShaderLib.background.vertexShader,
+						fragmentShader: ShaderLib.background.fragmentShader,
 						side: FrontSide,
 						depthTest: false,
 						depthWrite: false,

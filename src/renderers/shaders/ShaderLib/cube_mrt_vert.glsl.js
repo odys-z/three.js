@@ -1,11 +1,11 @@
 export default /* glsl */`
-out vec3 vWorldDirection;
+out vec3 vwDir;
 
 #include <common>
 
 void main() {
 
-	vWorldDirection = transformDirection( position, modelMatrix );
+	vwDir = transformDirection( position, modelMatrix );
 
 	#include <begin_vertex>
 	#include <project_vertex>
