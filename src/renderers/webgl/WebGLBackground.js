@@ -139,18 +139,12 @@ function WebGLBackground( renderer, cubemaps, state, objects, premultipliedAlpha
 
 			if ( planeMesh === undefined ) {
 
-				// if ( ! background.isEquirect && isMrt ) {
-				// 	console.warn("In branch mrt-further, background only support equirenctangular texture in MRT mode.");
-				// }
-
 				planeMesh = new Mesh(
 					new PlaneBufferGeometry( 2, 2 ),
 					new ShaderMaterial( {
 						isMrt: isMrt,
 						name: 'BackgroundMaterial',
 						uniforms: cloneUniforms( ShaderLib.background.uniforms ),
-						// vertexShader: isMrt ? ShaderLib.backgroundMrt.vertexShader : ShaderLib.background.vertexShader,
-						// fragmentShader: isMrt ? ShaderLib.backgroundMrt.fragmentShader : ShaderLib.background.fragmentShader,
 						vertexShader: ShaderLib.background.vertexShader,
 						fragmentShader: ShaderLib.background.fragmentShader,
 						side: FrontSide,
