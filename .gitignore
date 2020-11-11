@@ -20,5 +20,7 @@ test/*.cmd
 test/unit/build
 
 build
+*.min.js
+*.map.js
 
 **/node_modules
