@@ -1210,14 +1210,27 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 		const texture = renderTarget.texture;
 		const supportsMips = isPowerOfTwo( renderTarget ) || isWebGL2;
 
+
 		if ( textureNeedsGenerateMipmaps( texture, supportsMips ) ) {
 
-			const target = renderTarget.isWebGLCubeRenderTarget ? _gl.TEXTURE_CUBE_MAP : _gl.TEXTURE_2D;
-			const webglTexture = properties.get( texture ).__webglTexture;
+			// should we file a PR to MRTSupport?
+			if ( renderTarget instanceof WebGLMultiRenderTarget ) {
+				// we care about MRT textures,
+				// and avoid should exception from renderTarget.texture mip generation.
+				for ( var tex of renderTarget.textures)
+					; // TODO
+					; // TODO
+					; // TODO
+					; // TODO
+			}
+			else {
+				const target = renderTarget.isWebGLCubeRenderTarget ? _gl.TEXTURE_CUBE_MAP : _gl.TEXTURE_2D;
+				const webglTexture = properties.get( texture ).__webglTexture;
 
-			state.bindTexture( target, webglTexture );
-			generateMipmap( target, texture, renderTarget.width, renderTarget.height );
-			state.bindTexture( target, null );
+				state.bindTexture( target, webglTexture );
+				generateMipmap( target, texture, renderTarget.width, renderTarget.height );
+				state.bindTexture( target, null );
+			}
 
 		}
 

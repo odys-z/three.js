@@ -10258,7 +10258,7 @@
 
 	var cube_mrt_frag = "#include <envmap_common_pars_fragment>\nuniform float opacity;\nin vec3 vwDir;\n#include <cube_uv_reflection_fragment>\nvoid main() {\n\tvec3 vReflect = vwDir;\n\t#include <envmap_fragment>\n\tgl_FragColor = envColor;\n\tgl_FragColor.a *= opacity;\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <_mrt_end>\n}";
 
-	var _mrt_end = "xColor = pc_FragColor;\nxEnvSpecular = vec4(0.);";
+	var _mrt_end = "xColor = pc_FragColor;\nxEnvSpecular = vec4(0.);\nxBlurH = vec4(0.);";
 
 	var ShaderChunk = {
 		_mrt_end: _mrt_end,
@@ -13388,7 +13388,8 @@
 		return this;
 	}
 
-	WebGLProgram.mrt_layouts = "layout(location = 0) out highp vec4 pc_FragColor;\n\t\tlayout(location = 1) out highp vec4 xColor;\n\t\tlayout(location = 2) out highp vec4 xEnvSpecular;\n\t\t".replaceAll(/\t\t/g, '');
+	WebGLProgram.mrt_num = 4;
+	WebGLProgram.mrt_layouts = "layout(location = 0) out highp vec4 pc_FragColor;\n\t\tlayout(location = 1) out highp vec4 xColor;\n\t\tlayout(location = 2) out highp vec4 xEnvSpecular;\n\t\tlayout(location = 3) out highp vec4 xBlurH;\n\t\t".replaceAll(/\t\t/g, '');
 
 	function WebGLPrograms(renderer, cubemaps, extensions, capabilities, bindingStates, clipping) {
 		var programs = [];
