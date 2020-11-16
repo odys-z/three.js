@@ -1790,6 +1790,7 @@ function WebGLRenderer( parameters ) {
 
 		let framebuffer = _framebuffer;
 		let isCube = false;
+		let isMrt = false;
 
 		if ( renderTarget ) {
 
@@ -1803,6 +1804,7 @@ function WebGLRenderer( parameters ) {
 			} else if ( renderTarget.isWebGLMultisampleRenderTarget ) {
 
 				framebuffer = properties.get( renderTarget ).__webglMultisampledFramebuffer;
+				isMrt = true;
 
 			} else {
 
@@ -1895,6 +1897,13 @@ function WebGLRenderer( parameters ) {
 			const textureProperties = properties.get( renderTarget.texture );
 			_gl.framebufferTexture2D( _gl.FRAMEBUFFER, _gl.COLOR_ATTACHMENT0, _gl.TEXTURE_CUBE_MAP_POSITIVE_X + activeCubeFace, textureProperties.__webglTexture, activeMipmapLevel );
 
+		}
+
+		// ody: try suppress this warning:
+		// [.WebGL-0x1abf9488e000] GL_INVALID_ENUM: Texture filter not recognized.
+		else if (isMrt) {
+			console.log ("Here? ???");
+			// ...
 		}
 
 	};

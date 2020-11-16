@@ -483,6 +483,48 @@
 		return self;
 	}
 
+	function _unsupportedIterableToArray(o, minLen) {
+		if (!o) return;
+		if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+		var n = Object.prototype.toString.call(o).slice(8, -1);
+		if (n === "Object" && o.constructor) n = o.constructor.name;
+		if (n === "Map" || n === "Set") return Array.from(o);
+		if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+	}
+
+	function _arrayLikeToArray(arr, len) {
+		if (len == null || len > arr.length) len = arr.length;
+
+		for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+		return arr2;
+	}
+
+	function _createForOfIteratorHelperLoose(o, allowArrayLike) {
+		var it;
+
+		if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+			if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+				if (it) o = it;
+				var i = 0;
+				return function () {
+					if (i >= o.length) return {
+						done: true
+					};
+					return {
+						done: false,
+						value: o[i++]
+					};
+				};
+			}
+
+			throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+		}
+
+		it = o[Symbol.iterator]();
+		return it.next.bind(it);
+	}
+
 	var Vector2 = /*#__PURE__*/function () {
 		function Vector2(x, y) {
 			if (x === void 0) {
@@ -10258,7 +10300,7 @@
 
 	var cube_mrt_frag = "#include <envmap_common_pars_fragment>\nuniform float opacity;\nin vec3 vwDir;\n#include <cube_uv_reflection_fragment>\nvoid main() {\n\tvec3 vReflect = vwDir;\n\t#include <envmap_fragment>\n\tgl_FragColor = envColor;\n\tgl_FragColor.a *= opacity;\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <_mrt_end>\n}";
 
-	var _mrt_end = "xColor = pc_FragColor;\nxEnvSpecular = vec4(0.);\nxBlurH = vec4(0.);";
+	var _mrt_end = "xColor = pc_FragColor;\nxEnvSpecular = vec4(0.);";
 
 	var ShaderChunk = {
 		_mrt_end: _mrt_end,
@@ -13388,8 +13430,8 @@
 		return this;
 	}
 
-	WebGLProgram.mrt_num = 4;
-	WebGLProgram.mrt_layouts = "layout(location = 0) out highp vec4 pc_FragColor;\n\t\tlayout(location = 1) out highp vec4 xColor;\n\t\tlayout(location = 2) out highp vec4 xEnvSpecular;\n\t\tlayout(location = 3) out highp vec4 xBlurH;\n\t\t".replaceAll(/\t\t/g, '');
+	WebGLProgram.mrt_num = 3;
+	WebGLProgram.mrt_layouts = "layout(location = 0) out highp vec4 pc_FragColor;\n\t\tlayout(location = 1) out highp vec4 xColor;\n\t\tlayout(location = 2) out highp vec4 xEnvSpecular;\n\t\t".replaceAll(/\t\t/g, '');
 
 	function WebGLPrograms(renderer, cubemaps, extensions, capabilities, bindingStates, clipping) {
 		var programs = [];
@@ -16190,12 +16232,27 @@
 			var supportsMips = isPowerOfTwo(renderTarget) || isWebGL2;
 
 			if (textureNeedsGenerateMipmaps(texture, supportsMips)) {
-				var target = renderTarget.isWebGLCubeRenderTarget ? 34067 : 3553;
+				var target = renderTarget.isWebGLCubeRenderTarget ? 34067 : 3553; // should we file a PR to MRTSupport?
 
-				var webglTexture = properties.get(texture).__webglTexture;
+				if (renderTarget instanceof WebGLMultiRenderTarget) {
+					// we care about MRT textures,
+					// and should avoiding throwing exception while renderTarget.texture mip generating.
+					for (var _iterator = _createForOfIteratorHelperLoose(renderTarget.textures), _step; !(_step = _iterator()).done;) {
+						var tex = _step.value;
 
-				state.bindTexture(target, webglTexture);
-				generateMipmap(target, texture, renderTarget.width, renderTarget.height);
+						var webglTex_i = properties.get(tex).__webglTexture;
+
+						state.bindTexture(target, webglTexture);
+						generateMipmap(target, tex, renderTarget.width, renderTarget.height);
+					}
+				} else {
+					// const target = renderTarget.isWebGLCubeRenderTarget ? 34067 : 3553;
+					var _webglTexture = properties.get(texture).__webglTexture;
+
+					state.bindTexture(target, _webglTexture);
+					generateMipmap(target, texture, renderTarget.width, renderTarget.height);
+				}
+
 				state.bindTexture(target, null);
 			}
 		}

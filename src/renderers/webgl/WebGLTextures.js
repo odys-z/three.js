@@ -1,5 +1,6 @@
 import { LinearFilter, LinearMipmapLinearFilter, LinearMipmapNearestFilter, NearestFilter, NearestMipmapLinearFilter, NearestMipmapNearestFilter, RGBFormat, RGBAFormat, DepthFormat, DepthStencilFormat, UnsignedShortType, UnsignedIntType, UnsignedInt248Type, FloatType, HalfFloatType, MirroredRepeatWrapping, ClampToEdgeWrapping, RepeatWrapping } from '../../constants.js';
 import { MathUtils } from '../../math/MathUtils.js';
+import { WebGLMultiRenderTarget } from '../WebGLMultiRenderTarget.js';
 
 function WebGLTextures( _gl, extensions, state, properties, capabilities, utils, info ) {
 
@@ -1213,24 +1214,26 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 
 		if ( textureNeedsGenerateMipmaps( texture, supportsMips ) ) {
 
+			const target = renderTarget.isWebGLCubeRenderTarget ? _gl.TEXTURE_CUBE_MAP : _gl.TEXTURE_2D;
+
 			// should we file a PR to MRTSupport?
 			if ( renderTarget instanceof WebGLMultiRenderTarget ) {
 				// we care about MRT textures,
-				// and avoid should exception from renderTarget.texture mip generation.
-				for ( var tex of renderTarget.textures)
-					; // TODO
-					; // TODO
-					; // TODO
-					; // TODO
+				// and should avoiding throwing exception while renderTarget.texture mip generating.
+				for ( var tex of renderTarget.textures) {
+					let webglTex_i = properties.get( tex ).__webglTexture;
+					state.bindTexture( target, webglTexture );
+					generateMipmap( target, tex, renderTarget.width, renderTarget.height );
+				}
 			}
 			else {
-				const target = renderTarget.isWebGLCubeRenderTarget ? _gl.TEXTURE_CUBE_MAP : _gl.TEXTURE_2D;
+				// const target = renderTarget.isWebGLCubeRenderTarget ? _gl.TEXTURE_CUBE_MAP : _gl.TEXTURE_2D;
 				const webglTexture = properties.get( texture ).__webglTexture;
 
 				state.bindTexture( target, webglTexture );
 				generateMipmap( target, texture, renderTarget.width, renderTarget.height );
-				state.bindTexture( target, null );
 			}
+			state.bindTexture( target, null );
 
 		}
 
