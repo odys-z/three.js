@@ -1216,7 +1216,10 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 
 			const target = renderTarget.isWebGLCubeRenderTarget ? _gl.TEXTURE_CUBE_MAP : _gl.TEXTURE_2D;
 
+			// ody
 			// should we file a PR to MRTSupport?
+			// It's confirmed that mipmap neeeds to be regenerated every frame
+			// see <a href='https://stackoverflow.com/q/20359352'>the opengl question</a>
 			if ( renderTarget instanceof WebGLMultiRenderTarget ) {
 				// we care about MRT textures,
 				// and should avoiding throwing exception while renderTarget.texture mip generating.
