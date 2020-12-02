@@ -1225,7 +1225,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 				// and should avoiding throwing exception while renderTarget.texture mip generating.
 				for ( var tex of renderTarget.textures) {
 					let webglTex_i = properties.get( tex ).__webglTexture;
-					state.bindTexture( target, webglTexture ); // FIXME webglTex_i ?
+					state.bindTexture( target, webglTex_i );
 					// FIXME webglTex_i ?
 					// FIXME webglTex_i ?
 					// FIXME webglTex_i ?

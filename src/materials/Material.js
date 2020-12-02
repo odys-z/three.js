@@ -361,6 +361,10 @@ Material.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		this.name = source.name;
 
+		// ody
+		this.isMrt = source.isMrt;
+		this.glslVersion = source.glslVersion;
+		
 		this.fog = source.fog;
 
 		this.blending = source.blending;

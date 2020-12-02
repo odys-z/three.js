@@ -7045,7 +7045,10 @@
 			return new this.constructor().copy(this);
 		},
 		copy: function copy(source) {
-			this.name = source.name;
+			this.name = source.name; // ody
+
+			this.isMrt = source.isMrt;
+			this.glslVersion = source.glslVersion;
 			this.fog = source.fog;
 			this.blending = source.blending;
 			this.side = source.side;
@@ -14789,7 +14792,7 @@
 							}
 						}
 					} else if (material.visible) {
-						var _depthMaterial = getDepthMaterial(object, geometry, material, light, shadowCamera.near, shadowCamera.far, type); // ody
+						var _depthMaterial = getDepthMaterial(object, geometry, material, light, shadowCamera.near, shadowCamera.far, type); // ody - note 2020.Nov: should move this to getDepthMaterialVariant() ?
 
 
 						_depthMaterial.glslVersion = material.glslVersion;
@@ -16232,7 +16235,10 @@
 			var supportsMips = isPowerOfTwo(renderTarget) || isWebGL2;
 
 			if (textureNeedsGenerateMipmaps(texture, supportsMips)) {
-				var target = renderTarget.isWebGLCubeRenderTarget ? 34067 : 3553; // should we file a PR to MRTSupport?
+				var target = renderTarget.isWebGLCubeRenderTarget ? 34067 : 3553; // ody
+				// should we file a PR to MRTSupport?
+				// It's confirmed that mipmap neeeds to be regenerated every frame
+				// see <a href='https://stackoverflow.com/q/20359352'>the opengl question</a>
 
 				if (renderTarget instanceof WebGLMultiRenderTarget) {
 					// we care about MRT textures,
@@ -16242,14 +16248,17 @@
 
 						var webglTex_i = properties.get(tex).__webglTexture;
 
-						state.bindTexture(target, webglTexture);
+						state.bindTexture(target, webglTex_i); // FIXME webglTex_i ?
+						// FIXME webglTex_i ?
+						// FIXME webglTex_i ?
+
 						generateMipmap(target, tex, renderTarget.width, renderTarget.height);
 					}
 				} else {
 					// const target = renderTarget.isWebGLCubeRenderTarget ? 34067 : 3553;
-					var _webglTexture = properties.get(texture).__webglTexture;
+					var webglTexture = properties.get(texture).__webglTexture;
 
-					state.bindTexture(target, _webglTexture);
+					state.bindTexture(target, webglTexture);
 					generateMipmap(target, texture, renderTarget.width, renderTarget.height);
 				}
 
@@ -18686,6 +18695,7 @@
 
 			var framebuffer = _framebuffer;
 			var isCube = false;
+			var isMrt = false;
 
 			if (renderTarget) {
 				var __webglFramebuffer = properties.get(renderTarget).__webglFramebuffer;
@@ -18695,6 +18705,7 @@
 					isCube = true;
 				} else if (renderTarget.isWebGLMultisampleRenderTarget) {
 					framebuffer = properties.get(renderTarget).__webglMultisampledFramebuffer;
+					isMrt = true;
 				} else {
 					framebuffer = __webglFramebuffer;
 				}
@@ -18761,7 +18772,11 @@
 				var textureProperties = properties.get(renderTarget.texture);
 
 				_gl.framebufferTexture2D(36160, 36064, 34069 + activeCubeFace, textureProperties.__webglTexture, activeMipmapLevel);
-			}
+			} // ody: try suppress this warning:
+			// [.WebGL-0x1abf9488e000] GL_INVALID_ENUM: Texture filter not recognized.
+			else if (isMrt) {
+					console.log("Here? ???"); // ...
+				}
 		};
 
 		this.readRenderTargetPixels = function (renderTarget, x, y, width, height, buffer, activeCubeFaceIndex) {
