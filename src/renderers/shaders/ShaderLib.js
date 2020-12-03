@@ -141,6 +141,34 @@ const ShaderLib = {
 
 	},
 
+
+	standardMrt: {
+
+		uniforms: mergeUniforms( [
+			UniformsLib.common,
+			UniformsLib.envmap,
+			UniformsLib.aomap,
+			UniformsLib.lightmap,
+			UniformsLib.emissivemap,
+			UniformsLib.bumpmap,
+			UniformsLib.normalmap,
+			UniformsLib.displacementmap,
+			UniformsLib.roughnessmap,
+			UniformsLib.metalnessmap,
+			UniformsLib.fog,
+			UniformsLib.lights,
+			{
+				emissive: { value: new Color( 0x000000 ) },
+				roughness: { value: 1.0 },
+				metalness: { value: 0.0 },
+				envMapIntensity: { value: 1 } // temporary
+			}
+		] ),
+
+		vertexShader: ShaderChunk.meshphysical_vert,
+		fragmentShader: ShaderChunk.meshphysical_mrt_frag
+	},
+
 	toon: {
 
 		uniforms: mergeUniforms( [

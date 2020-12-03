@@ -362,9 +362,11 @@ Material.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 		this.name = source.name;
 
 		// ody
+		// design violation: can be merged into constructor after MRT PR accepted.
 		this.isMrt = source.isMrt;
 		this.glslVersion = source.glslVersion;
-		
+		this.type = source.type;
+
 		this.fog = source.fog;
 
 		this.blending = source.blending;

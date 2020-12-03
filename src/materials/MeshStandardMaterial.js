@@ -59,7 +59,8 @@ function MeshStandardMaterial( parameters ) {
 
 	this.defines = { 'STANDARD': '' };
 
-	this.type = 'MeshStandardMaterial';
+	// this.type = 'MeshStandardMaterial';
+	this.type = parameters && parameters.isMrt ? 'MeshStandardMaterial_mrt' : 'MeshStandardMaterial';
 
 	this.color = new Color( 0xffffff ); // diffuse
 	this.roughness = 1.0;

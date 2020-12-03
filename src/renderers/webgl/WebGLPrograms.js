@@ -34,6 +34,7 @@ function WebGLPrograms( renderer, cubemaps, extensions, capabilities, bindingSta
 
 		LineBasicMaterial_mrt: 'basicMrt',
 		MeshBasicMaterial_mrt: 'basicMrt',
+		MeshStandardMaterial_mrt: 'standardMrt',
 		MeshPhongMaterial_mrt: 'phongMrt'
 	};
 

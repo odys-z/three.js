@@ -135,6 +135,7 @@ import background_mrt_vert from './ShaderLib/background_mrt_vert.glsl.js';
 import background_mrt_frag from './ShaderLib/background_mrt_frag.glsl.js';
 import cube_mrt_vert from './ShaderLib/cube_mrt_vert.glsl.js';
 import cube_mrt_frag from './ShaderLib/cube_mrt_frag.glsl.js';
+import meshphysical_mrt_frag from './ShaderLib/meshphysical_mrt_frag.glsl.js';
 import _mrt_end from './ShaderChunk/_mrt_end.glsl.js';
 
 export const ShaderChunk = {
@@ -272,6 +273,7 @@ export const ShaderChunk = {
 
 	meshbasic_mrt_frag,
 	meshphong_mrt_frag,
+	meshphysical_mrt_frag,
 	cube_mrt_vert, cube_mrt_frag,
 	background_mrt_frag, background_mrt_vert,
 };
