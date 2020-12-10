@@ -864,11 +864,12 @@ function WebGLProgram( renderer, cacheKey, parameters, bindingStates ) {
 
 }
 
-WebGLProgram.mrt_num = 3;
+WebGLProgram.mrt_num = 4;
 WebGLProgram.mrt_layouts =
 		`layout(location = 0) out highp vec4 pc_FragColor;
 		layout(location = 1) out highp vec4 xColor;
 		layout(location = 2) out highp vec4 xEnvSpecular;
+		layout(location = 3) out highp vec4 xBokehDepth;
 		`.replaceAll(/\t\t/g, '');
 
 export { WebGLProgram };
