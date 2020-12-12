@@ -25,5 +25,6 @@ void main() {
 	#include <encodings_fragment>
 
 	#include <_mrt_end>
+	xBokehDepth = vec4(sampleUV.x, sampleUV.y, 1., 0.);
 }
 `;
