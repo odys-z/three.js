@@ -25,6 +25,12 @@ void main() {
 	#include <encodings_fragment>
 
 	#include <_mrt_end>
-	xBokehDepth = vec4(sampleUV.x, sampleUV.y, 1., 0.);
+	xBokehDepth = vec4(sampleUV.x, sampleUV.y, -4000., 0.);
 }
 `;
+	// FIXME 4000. is far
+	// FIXME 4000. is far
+	// FIXME 4000. is far
+	// FIXME 4000. is far
+	// FIXME 4000. is far
+	// FIXME 4000. is far
