@@ -69,7 +69,5 @@ void main() {
 	#include <premultiplied_alpha_fragment>
 	#include <dithering_fragment>
 	#include <_mrt_end>
-	xBokehDepth = vec4(vUv.x, vUv.y, 1., 0.);
-
 }
 `;
