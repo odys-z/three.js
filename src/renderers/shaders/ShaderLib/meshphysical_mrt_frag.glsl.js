@@ -73,6 +73,13 @@ varying vec3 vViewPosition;
 #include <logdepthbuf_pars_fragment>
 #include <clipping_planes_pars_fragment>
 
+uniform float bokehNear;
+uniform float bokehFar;
+in float vzBokeh;
+vec4 bokehDepth(float bokehNear, float bokehFar) {
+	return vec4( 0., 0., (vzBokeh - bokehNear) / (bokehFar - bokehNear), 1.0);
+}
+
 void main() {
 
 	#include <clipping_planes_fragment>
@@ -122,8 +129,8 @@ void main() {
 	#include <fog_fragment>
 	#include <premultiplied_alpha_fragment>
 	#include <dithering_fragment>
-	
-	#include <_mrt_end>
+
+	#include <_mrt_bokeh_frag>
 
 }
 `;

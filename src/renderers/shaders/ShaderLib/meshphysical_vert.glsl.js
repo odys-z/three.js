@@ -28,6 +28,14 @@ varying vec3 vViewPosition;
 #include <logdepthbuf_pars_vertex>
 #include <clipping_planes_pars_vertex>
 
+uniform float bokehNear;
+uniform float bokehFar;
+out float vzBokeh;
+float bokehDepth() {
+	vzBokeh = -(modelViewMatrix * vec4(position, 1.0)).z;
+	return vzBokeh;
+}
+
 void main() {
 
 	#include <uv_vertex>
@@ -66,6 +74,8 @@ void main() {
 	#include <worldpos_vertex>
 	#include <shadowmap_vertex>
 	#include <fog_vertex>
+
+	#include <_mrt_bokeh_vert>
 
 }
 `;

@@ -1579,6 +1579,18 @@ function WebGLRenderer( parameters ) {
 
 			}
 
+			// ody: for bokeh global unfiroms
+			if ( material.isMeshPhongMaterial ||
+				material.isMeshToonMaterial ||
+				material.isMeshLambertMaterial ||
+				material.isMeshBasicMaterial ||
+				material.isMeshStandardMaterial ||
+				material.isRawShaderMaterial ) {
+
+				p_uniforms.setValue( _gl, 'bokehFar', camera.far );
+				p_uniforms.setValue( _gl, 'bokehNear', camera.near );
+			}
+
 		}
 
 		// skinning uniforms must be set even if material didn't change

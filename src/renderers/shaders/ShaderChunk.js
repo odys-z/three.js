@@ -137,9 +137,10 @@ import cube_mrt_vert from './ShaderLib/cube_mrt_vert.glsl.js';
 import cube_mrt_frag from './ShaderLib/cube_mrt_frag.glsl.js';
 import meshphysical_mrt_frag from './ShaderLib/meshphysical_mrt_frag.glsl.js';
 import _mrt_end from './ShaderChunk/_mrt_end.glsl.js';
+import _mrt_bokeh_frag from './ShaderChunk/_mrt_bokeh_frag.glsl.js';
+import _mrt_bokeh_vert from './ShaderChunk/_mrt_bokeh_vert.glsl.js';
 
 export const ShaderChunk = {
-	_mrt_end,
 	alphamap_fragment: alphamap_fragment,
 	alphamap_pars_fragment: alphamap_pars_fragment,
 	alphatest_fragment: alphatest_fragment,
@@ -271,6 +272,9 @@ export const ShaderChunk = {
 	sprite_frag: sprite_frag,
 	sprite_vert: sprite_vert,
 
+	_mrt_end,
+	_mrt_bokeh_frag,
+	_mrt_bokeh_vert,
 	meshbasic_mrt_frag,
 	meshphong_mrt_frag,
 	meshphysical_mrt_frag,
