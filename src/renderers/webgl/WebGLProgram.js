@@ -687,9 +687,6 @@ function WebGLProgram( renderer, cacheKey, parameters, bindingStates ) {
 			// ( parameters.glslVersion === GLSL3 ) ? '' : 'out highp vec4 pc_fragColor;',
 			// ( parameters.glslVersion === GLSL3 ) ? '' : '#define gl_FragColor pc_fragColor',
 			( parameters.glslVersion === GLSL3 ) ?
-				// 'layout(location = 0) out highp vec4 pc_FragColor;\n' +
-				// 'layout(location = 1) out highp vec4 xColor;\n' +
-				// 'layout(location = 2) out highp vec4 xEnvSpecular;\n' +
 				WebGLProgram.mrt_layouts +
 				'#define gl_FragColor pc_FragColor' : '',
 
