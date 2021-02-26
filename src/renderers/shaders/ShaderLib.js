@@ -239,6 +239,23 @@ const ShaderLib = {
 
 	},
 
+	dashedMrt: {
+
+		uniforms: mergeUniforms( [
+			UniformsLib.common,
+			UniformsLib.fog,
+			{
+				scale: { value: 1 },
+				dashSize: { value: 1 },
+				totalSize: { value: 2 }
+			}
+		] ),
+
+		vertexShader: ShaderChunk.linedashed_vert,
+		fragmentShader: ShaderChunk.linedashed_mrt_frag
+
+	},
+
 	depth: {
 
 		uniforms: mergeUniforms( [

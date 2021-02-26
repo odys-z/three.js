@@ -33,6 +33,7 @@ function WebGLPrograms( renderer, cubemaps, extensions, capabilities, bindingSta
 		SpriteMaterial: 'sprite',
 
 		LineBasicMaterial_mrt: 'basicMrt',
+		LineDashedMaterial_mrt: 'dashedMrt',
 		MeshBasicMaterial_mrt: 'basicMrt',
 		MeshStandardMaterial_mrt: 'standardMrt',
 		MeshPhongMaterial_mrt: 'phongMrt'

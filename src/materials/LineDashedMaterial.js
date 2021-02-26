@@ -17,7 +17,9 @@ function LineDashedMaterial( parameters ) {
 
 	LineBasicMaterial.call( this );
 
-	this.type = 'LineDashedMaterial';
+	// this.type = 'LineDashedMaterial';
+	this.type = parameters && parameters.isMrt ?
+		'LineDashedMaterial_mrt' : 'LineDashedMaterial';
 
 	this.scale = 1;
 	this.dashSize = 3;
